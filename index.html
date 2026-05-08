@@ -14,19 +14,17 @@
 
         .wrapper { display: flex; flex: 1; gap: 25px; width: 95%; max-width: 1400px; align-items: flex-start; justify-content: center; z-index: 10; padding: 40px 20px; margin: 0 auto; }
 
-        /* Panel Glassmorphism */
         .side-panel { flex: 1; min-width: 320px; display: flex; flex-direction: column; gap: 20px; }
         .glass-box { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(15px); padding: 30px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
 
-        /* Main Card */
         .main-card { width: 380px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(25px); padding: 35px; border-radius: 45px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 50px 100px rgba(0,0,0,0.5); }
-        .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 30px; overflow: hidden; margin-bottom: 25px; }
-        .image-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(40%); }
+        .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 30px; overflow: hidden; margin-bottom: 25px; background: #111; }
+        .image-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(40%); opacity: 0; transition: opacity 1s ease; }
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; }
         .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.2rem; line-height: 1.6; font-style: italic; }
 
         h3 { font-size: 1.1rem; color: #38bdf8; margin: 0 0 15px 0; letter-spacing: 1px; }
-        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; outline: none; font-family: 'Poppins'; }
+        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; outline: none; }
         .result-box { margin-top: 15px; font-size: 0.9rem; color: #cbd5e1; line-height: 1.7; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; min-height: 100px; }
         
         .ai-explanation { margin-top: 15px; font-size: 0.85rem; color: #94a3b8; line-height: 1.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
@@ -37,12 +35,12 @@
             font-weight: 600; width: 100%; cursor: pointer; transition: 0.3s; 
             font-size: 1rem; box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2);
         }
-        button#btn-play:active { transform: scale(0.98); }
+        button#btn-play:disabled { opacity: 0.5; cursor: wait; }
 
         @media (max-width: 1024px) { .wrapper { flex-direction: column; align-items: center; } .side-panel { width: 100%; } }
     </style>
 </head>
-<body onclick="startBacksound()" onload="initApp()">
+<body onload="initApp()">
 
 <div id="yt-player" style="position: absolute; left: -9999px;"></div>
 
@@ -50,8 +48,8 @@
     <div class="side-panel">
         <div class="glass-box">
             <h3>✨ Renungan Hari Ini :</h3>
-            <div id="daily-verse" style="font-weight: 600; color: #f8fafc; font-size: 1.1rem; line-height: 1.5;">Memuat ayat...</div>
-            <div id="daily-explanation" class="ai-explanation">Menganalisis pesan...</div>
+            <div id="daily-verse" style="font-weight: 600; color: #f8fafc; font-size: 1.1rem; line-height: 1.5;">Memuat...</div>
+            <div id="daily-explanation" class="ai-explanation">Menyiapkan pesan...</div>
         </div>
     </div>
 
@@ -59,11 +57,10 @@
         <div class="image-card">
             <img id="display-image" src="">
             <div class="overlay">
-                <div id="display-isi" class="ayat-isi">Menyiapkan renungan...</div>
+                <div id="display-isi" class="ayat-isi">Memuat Renungan...</div>
             </div>
         </div>
-        <button onclick="toggleRenungan()" id="btn-play">▶ Putar Renungan Hari Ini</button>
-        <p style="font-size: 0.75rem; color: #475569; margin-top: 15px;">*Ketuk di mana saja untuk musik latar</p>
+        <button onclick="toggleRenungan()" id="btn-play">▶ Putar Renungan</button>
     </div>
 
     <div class="side-panel">
@@ -77,76 +74,79 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsF3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec";
-    let player, teksRenungan = "", backsoundStarted = false;
+    // Link GAS yang baru untuk memastikan data terpanggil
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec";
+    let player, teksRenungan = "", musicStarted = false;
 
-    // Data Harian
     const dailyData = [
-        { verse: "Filipi 4:13", text: "Segala perkara dapat kutanggung di dalam Dia yang memberi kekuatan kepadaku.", exp: "Penjelasan : Kekuatanmu bukan dari usahamu sendiri, tapi dari Tuhan yang diam di dalammu. Hadapi tantangan hari ini dengan tenang." },
-        { verse: "Yesaya 41:10", text: "Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu.", exp: "Penjelasan : Ketakutan akan sirna saat kamu menyadari siapa yang berjalan di sampingmu. Tuhan memegang tangan kananmu." }
+        { verse: "Filipi 4:13", text: "Segala perkara dapat kutanggung di dalam Dia yang memberi kekuatan kepadaku.", exp: "Penjelasan : Kekuatanmu bukan dari usahamu sendiri, tapi dari Tuhan yang diam di dalammu." },
+        { verse: "Yesaya 41:10", text: "Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu.", exp: "Penjelasan : Tuhan memegang tangan kananmu dalam setiap keadaan." }
     ];
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('yt-player', {
             height: '0', width: '0',
-            videoId: 'P2vR9Xm9G78', // Lagu instrumental penyembahan
-            playerVars: { 'loop': 1, 'playlist': 'P2vR9Xm9G78' },
+            videoId: 'P2vR9Xm9G78', // Instrumental lembut
+            playerVars: { 'loop': 1, 'playlist': 'P2vR9Xm9G78', 'autoplay': 0 },
             events: { 'onReady': onPlayerReady }
         });
     }
 
-    function onPlayerReady() {
-        player.setVolume(20); // Set volume musik latar agar tetap pelan
-    }
-
-    function startBacksound() {
-        if (!backsoundStarted && player) {
-            player.playVideo();
-            backsoundStarted = true;
-        }
-    }
+    function onPlayerReady() { player.setVolume(15); }
 
     function initApp() {
-        // Tampilkan Data Harian
         const day = new Date().getDate() % dailyData.length;
         document.getElementById('daily-verse').innerText = dailyData[day].verse + ": \"" + dailyData[day].text + "\"";
         document.getElementById('daily-explanation').innerText = dailyData[day].exp;
 
-        // Ambil Data Renungan dari Google Script
-        fetch(GAS_URL).then(res => res.json()).then(data => {
-            teksRenungan = data.teksNarasi;
-            document.getElementById('display-image').src = data.imageUrl;
-            document.getElementById('display-isi').innerText = `"${data.isiAyat}"`;
-        });
+        // Ambil data dengan perlindungan error
+        fetch(GAS_URL)
+            .then(res => res.json())
+            .then(data => {
+                teksRenungan = data.teksNarasi;
+                const img = document.getElementById('display-image');
+                img.src = data.imageUrl;
+                img.onload = () => img.style.opacity = "1";
+                document.getElementById('display-isi').innerText = `"${data.isiAyat}"`;
+            })
+            .catch(err => {
+                document.getElementById('display-isi').innerText = "Gagal memuat renungan. Silakan refresh halaman.";
+            });
     }
 
     function toggleRenungan() {
+        // Aktifkan musik secara otomatis saat tombol diklik pertama kali
+        if (!musicStarted && player) {
+            player.playVideo();
+            musicStarted = true;
+        }
+
         const btn = document.getElementById('btn-play');
         if (window.speechSynthesis.speaking) {
             window.speechSynthesis.cancel();
-            btn.innerText = "▶ Putar Renungan Hari Ini";
-            if(player) player.playVideo(); // Musik nyala lagi kalau renungan berhenti
+            btn.innerText = "▶ Putar Renungan";
+            if(player) player.playVideo();
             return;
         }
 
+        if(!teksRenungan) return;
+
         const utt = new SpeechSynthesisUtterance(teksRenungan);
         const voices = window.speechSynthesis.getVoices();
-        
-        // --- SUARA PEREMPUAN FAVORIT ---
         const femaleVoice = voices.find(v => v.lang.includes('id') && !v.name.toLowerCase().includes('male'));
-        if(femaleVoice) utt.voice = femaleVoice;
         
-        utt.pitch = 1.25; // Nada lembut dan jernih
-        utt.rate = 0.95;  // Kecepatan bicara yang tenang
+        if(femaleVoice) utt.voice = femaleVoice;
+        utt.pitch = 1.25;
+        utt.rate = 0.95;
         
         utt.onstart = () => {
-            btn.innerText = "⏹ Berhenti Mendengarkan";
-            if(player) player.pauseVideo(); // Musik latar mati saat renungan bicara
+            btn.innerText = "⏹ Berhenti";
+            if(player) player.pauseVideo();
         };
 
         utt.onend = () => {
             btn.innerText = "▶ Putar Ulang";
-            if(player) player.playVideo(); // Musik latar otomatis nyala lagi setelah Amin
+            if(player) player.playVideo();
         };
 
         window.speechSynthesis.speak(utt);
@@ -162,8 +162,7 @@
         document.getElementById('res-topic').innerText = db[key] || "Coba topik lain: Sembuh, Semangat, atau Kecewa.";
     }
 
-    // Partikel hiasan
-    for(let i=0; i<20; i++) {
+    for(let i=0; i<15; i++) {
         let p = document.createElement('div'); p.className = 'particle';
         p.style.left = Math.random() * 100 + 'vw'; p.style.animationDelay = Math.random() * 15 + 's';
         document.body.appendChild(p);
