@@ -8,33 +8,28 @@
     <style>
         body { font-family: 'Poppins', sans-serif; background: #020617; display: flex; flex-direction: column; min-height: 100vh; margin: 0; color: white; overflow-x: hidden; }
         
-        /* Particle Background */
         .particle { position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 50%; bottom: -10px; animation: float 15s linear infinite; z-index: 0; }
         @keyframes float { from { transform: translateY(0); } to { transform: translateY(-110vh); } }
 
         .wrapper { display: flex; flex: 1; gap: 25px; width: 95%; max-width: 1400px; align-items: flex-start; justify-content: center; z-index: 10; padding: 20px; margin: 0 auto; margin-bottom: 120px; }
 
-        /* Panel Glassmorphism */
         .side-panel { flex: 1; min-width: 320px; display: flex; flex-direction: column; gap: 20px; }
         .glass-box { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(15px); padding: 30px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
 
-        /* Main Card */
         .main-card { width: 380px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(25px); padding: 30px; border-radius: 45px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 50px 100px rgba(0,0,0,0.5); }
         .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 30px; overflow: hidden; margin-bottom: 20px; }
         .image-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(40%); }
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; }
         .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.1rem; line-height: 1.5; font-style: italic; }
 
-        /* Input & UI Elements */
-        h3 { font-size: 1.1rem; color: #38bdf8; margin: 0 0 15px 0; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
-        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; outline: none; font-family: 'Poppins'; }
-        .result-box { margin-top: 15px; font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; min-height: 100px; font-style: italic; }
+        h3 { font-size: 1.1rem; color: #38bdf8; margin: 0 0 15px 0; letter-spacing: 1px; }
+        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; outline: none; }
+        .result-box { margin-top: 15px; font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; min-height: 100px; }
         
         .ai-explanation { margin-top: 15px; font-size: 0.85rem; color: #94a3b8; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
 
-        button#btn-play { background: linear-gradient(135deg, #1db954 0%, #1ed760 100%); color: white; border: none; padding: 18px; border-radius: 40px; font-weight: 600; width: 100%; cursor: pointer; transition: 0.3s; }
+        button#btn-play { background: linear-gradient(135deg, #1db954 0%, #1ed760 100%); color: white; border: none; padding: 18px; border-radius: 40px; font-weight: 600; width: 100%; cursor: pointer; }
 
-        /* Player Bar */
         .player-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 100px; background: #000; border-top: 1px solid #282828; display: flex; align-items: center; padding: 0 30px; z-index: 1000; justify-content: space-between; }
         .progress-area { width: 40%; display: flex; flex-direction: column; align-items: center; gap: 8px; }
         input[type="range"] { width: 100%; accent-color: #1db954; cursor: pointer; }
@@ -42,16 +37,16 @@
         @media (max-width: 1024px) { .wrapper { flex-direction: column; align-items: center; } .side-panel { width: 100%; } }
     </style>
 </head>
-<body onload="initApp()">
+<body onclick="startAudioContext()" onload="initApp()">
 
 <div id="yt-player" style="position: absolute; left: -9999px;"></div>
 
 <div class="wrapper">
     <div class="side-panel">
         <div class="glass-box">
-            <h3>✨ Daily Manna (AI)</h3>
+            <h3>✨ Daily Manna</h3>
             <div id="daily-verse" style="font-weight: 600; color: #f8fafc; font-size: 1rem;">Memuat ayat...</div>
-            <div id="daily-explanation" class="ai-explanation">Menganalisis pesan untukmu...</div>
+            <div id="daily-explanation" class="ai-explanation">Menyiapkan pesan...</div>
         </div>
     </div>
 
@@ -69,7 +64,7 @@
         <div class="glass-box">
             <h3>🔍 Cari Kekuatan</h3>
             <input type="text" id="search-topic" class="search-box" placeholder="Ketik topik (ex: Sembuh, Semangat)..." onkeyup="if(event.keyCode===13) cariTopik()">
-            <div id="res-topic" class="result-box">Cari ayat berdasarkan apa yang kamu rasakan saat ini...</div>
+            <div id="res-topic" class="result-box">Cari ayat penyemangat...</div>
         </div>
     </div>
 </div>
@@ -79,7 +74,7 @@
         <img src="https://i.scdn.co/image/ab67616d0000b27376c7577583a69634d57c6691" style="width:56px; border-radius:4px;">
         <div>
             <div style="font-size:0.9rem; font-weight:600">Instrumen Teduh</div>
-            <div style="font-size:0.75rem; color:#b3b3b3">Playlist Rohani</div>
+            <div style="font-size:0.75rem; color:#b3b3b3">Worship Ambient</div>
         </div>
     </div>
     <div class="progress-area">
@@ -94,36 +89,44 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec";
-    let player, teksRenungan = "";
+    let player, teksRenungan = "", hasStarted = false;
 
-    // Database Motivasi Harian (Bisa dikembangkan lagi)
     const dailyData = [
-        { verse: "Filipi 4:13", text: "Segala perkara dapat kutanggung di dalam Dia yang memberi kekuatan kepadaku.", ai: "AI Note: Tuhan tidak menjanjikan jalan yang rata, tapi Dia menjanjikan kekuatan yang cukup untuk setiap tanjakan yang kamu hadapi hari ini." },
-        { verse: "Yesaya 41:10", text: "Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu.", ai: "AI Note: Ketakutanmu mungkin nyata, tapi penyertaan Tuhan jauh lebih nyata. Tarik napas dalam, Tuhan memegang tangan kananmu." }
+        { verse: "Filipi 4:13", text: "Segala perkara dapat kutanggung di dalam Dia yang memberi kekuatan kepadaku.", exp: "Penjelasan : Kekuatanmu bukan berasal dari usahamu sendiri, melainkan dari Kristus yang tinggal di dalammu. Hadapi tantangan hari ini dengan tenang karena Dia bersamamu." },
+        { verse: "Yesaya 41:10", text: "Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu.", exp: "Penjelasan : Saat dunia terasa goyah, ingatlah bahwa Tuhan memegang tanganmu. Ketakutan akan sirna saat kamu menyadari siapa yang berjalan di sampingmu." }
     ];
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('yt-player', {
             height: '0', width: '0',
-            videoId: 'P2vR9Xm9G78', // Default: Waktu Tuhan Instrumental
+            videoId: 'P2vR9Xm9G78', // Instrumental lembut
+            playerVars: { 'loop': 1, 'playlist': 'P2vR9Xm9G78' },
             events: { 'onReady': onPlayerReady }
         });
     }
 
-    function onPlayerReady(event) {
+    function startAudioContext() {
+        if (!hasStarted && player) {
+            player.playVideo();
+            document.getElementById('music-icon').innerText = "⏸";
+            hasStarted = true;
+        }
+    }
+
+    function onPlayerReady() {
         document.getElementById('seek-bar').max = player.getDuration();
         setInterval(() => {
-            document.getElementById('seek-bar').value = player.getCurrentTime();
+            if(player.getPlayerState() === 1) {
+                document.getElementById('seek-bar').value = player.getCurrentTime();
+            }
         }, 1000);
     }
 
     function initApp() {
-        // Load Daily Manna
         const day = new Date().getDate() % dailyData.length;
         document.getElementById('daily-verse').innerText = dailyData[day].verse + ": \"" + dailyData[day].text + "\"";
-        document.getElementById('daily-explanation').innerText = dailyData[day].ai;
+        document.getElementById('daily-explanation').innerText = dailyData[day].exp;
 
-        // Load Renungan
         fetch(GAS_URL).then(res => res.json()).then(data => {
             teksRenungan = data.teksNarasi;
             document.getElementById('display-image').src = data.imageUrl;
@@ -146,13 +149,9 @@
         }
         const utt = new SpeechSynthesisUtterance(teksRenungan);
         const voices = window.speechSynthesis.getVoices();
-        
-        // Pilihan suara khusus Perempuan Indonesia
         const femaleVoice = voices.find(v => v.lang.includes('id') && !v.name.toLowerCase().includes('male'));
         if(femaleVoice) utt.voice = femaleVoice;
-        
-        utt.pitch = 1.2; // Suara lebih lembut dan ceria
-        utt.rate = 0.95; 
+        utt.pitch = 1.2;
         
         utt.onstart = () => { player.pauseVideo(); document.getElementById('music-icon').innerText = "▶"; };
         utt.onend = () => { player.playVideo(); document.getElementById('music-icon').innerText = "⏸"; };
@@ -163,11 +162,10 @@
         const db = {
             "sembuh": "Mazmur 147:3 - 'Ia menyembuhkan orang-orang yang patah hati dan membalut luka-luka mereka.'",
             "semangat": "Roma 12:11 - 'Janganlah hendaknya kerajinanmu kendor, biarlah rohmu menyala-nyala dan layanilah Tuhan.'",
-            "kecewa": "1 Petrus 5:7 - 'Serahkanlah segala kekhawatiranmu kepada-Nya, sebab Ia yang memelihara kamu.'",
-            "takut": "Yosua 1:9 - 'Bukankah telah Kuperintahkan kepadamu: kuatkan dan teguhkanlah hatimu? Janganlah kecut dan tawar hati.'"
+            "kecewa": "1 Petrus 5:7 - 'Serahkanlah segala kekhawatiranmu kepada-Nya, sebab Ia yang memelihara kamu.'"
         };
         const key = document.getElementById('search-topic').value.toLowerCase();
-        document.getElementById('res-topic').innerText = db[key] || "Topik belum ditemukan. Coba: Sembuh, Semangat, atau Takut.";
+        document.getElementById('res-topic').innerText = db[key] || "Coba topik lain: Sembuh, Semangat, atau Kecewa.";
     }
 
     for(let i=0; i<15; i++) {
