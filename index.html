@@ -6,13 +6,52 @@
     <title>Renungan Harian</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background: #0f172a; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: white; }
-        .container { background: #1e293b; padding: 30px; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); max-width: 420px; width: 90%; text-align: center; border: 1px solid #334155; }
-        .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 30px; overflow: hidden; margin-bottom: 25px; background: #111; }
+        /* Animasi Background Partikel */
+        @keyframes move {
+            from { transform: translateY(0); opacity: 0.5; }
+            to { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; margin: 0; color: white; overflow: hidden;
+        }
+
+        /* Elemen dekorasi partikel */
+        .particle {
+            position: absolute; width: 4px; height: 4px; background: white;
+            border-radius: 50%; bottom: -10px; opacity: 0.5;
+            animation: move 10s linear infinite;
+        }
+
+        .container { 
+            background: rgba(30, 41, 59, 0.8); 
+            backdrop-filter: blur(15px);
+            padding: 30px; border-radius: 40px; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6); 
+            max-width: 420px; width: 90%; text-align: center; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            z-index: 10;
+        }
+
+        .image-card { 
+            position: relative; width: 100%; aspect-ratio: 1/1; 
+            border-radius: 30px; overflow: hidden; margin-bottom: 25px; 
+            background: #111; transition: transform 0.5s ease;
+        }
+        
+        .image-card:hover { transform: scale(1.02); }
+
         .image-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(40%); }
+
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; }
+
         .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.3rem; line-height: 1.6; margin-bottom: 15px; font-style: italic; color: #f8fafc; }
+
         .ayat-ref { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: #38bdf8; }
+
         button { 
             background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); 
             color: white; border: none; padding: 20px; border-radius: 50px; 
@@ -20,12 +59,26 @@
             display: flex; align-items: center; justify-content: center; gap: 12px;
             font-size: 1.1rem; transition: all 0.3s ease;
         }
+
         button:active { transform: scale(0.95); }
+
+        /* Fitur Tambahan: Progress Bar */
+        .progress-container {
+            width: 100%; background: #334155; height: 4px; 
+            border-radius: 2px; margin-top: 20px; overflow: hidden;
+            display: none;
+        }
+        .progress-bar { width: 0%; height: 100%; background: #38bdf8; transition: width 0.1s linear; }
+
         .loader { border: 4px solid #334155; border-top: 4px solid #38bdf8; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 80px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
+
+<audio id="bg-music" loop>
+    <source src="https://www.chosic.com/wp-content/uploads/2021/07/Rain-and-Pianos.mp3" type="audio/mpeg">
+</audio>
 
 <div class="container">
     <div id="loading" class="loader"></div>
@@ -37,68 +90,89 @@
                 <div class="ayat-ref" id="display-label"></div>
             </div>
         </div>
-        <button id="btn-audio" onclick="mulaiSuara()">
-            <span id="btn-text">▶ Putar Renungan Hari Ini</span>
+        <button id="btn-audio" onclick="mulaiRenungan()">
+            <span id="btn-text">▶ Putar Renungan Harian</span>
         </button>
+        
+        <div class="progress-container" id="prog-cont">
+            <div class="progress-bar" id="prog-bar"></div>
+        </div>
     </div>
 </div>
 
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec"; 
-    
     let teksRenungan = "";
+    const music = document.getElementById('bg-music');
+    music.volume = 0.3; // Musik pelan saja sebagai latar
 
-    fetch(GAS_URL)
-        .then(res => res.json())
-        .then(data => {
-            teksRenungan = data.teksNarasi;
-            document.getElementById('display-image').src = data.imageUrl;
-            document.getElementById('display-isi').innerText = `"${data.isiAyat}"`;
-            document.getElementById('display-label').innerText = data.labelAyat;
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-        });
+    // Buat partikel terbang di background
+    for(let i=0; i<20; i++){
+        let p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDelay = Math.random() * 10 + 's';
+        document.body.appendChild(p);
+    }
 
-    function mulaiSuara() {
+    fetch(GAS_URL).then(res => res.json()).then(data => {
+        teksRenungan = data.teksNarasi;
+        document.getElementById('display-image').src = data.imageUrl;
+        document.getElementById('display-isi').innerText = `"${data.isiAyat}"`;
+        document.getElementById('display-label').innerText = data.labelAyat;
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+    });
+
+    function mulaiRenungan() {
         const btnText = document.getElementById('btn-text');
+        const progCont = document.getElementById('prog-cont');
+        const progBar = document.getElementById('prog-bar');
 
         if (window.speechSynthesis.speaking) {
             window.speechSynthesis.cancel();
+            music.pause();
+            music.currentTime = 0;
             btnText.innerText = "▶ Putar Renungan";
+            progCont.style.display = 'none';
             return;
         }
 
         if (teksRenungan) {
             const utterance = new SpeechSynthesisUtterance(teksRenungan);
             const voices = window.speechSynthesis.getVoices();
-
-            const idMaleVoice = voices.find(v => v.lang.includes('id') && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('pria') || v.name.toLowerCase().includes('david')));
+            const idMaleVoice = voices.find(v => v.lang.includes('id') && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('pria')));
             
-            if (idMaleVoice) {
-                utterance.voice = idMaleVoice;
-            }
-
+            if (idMaleVoice) utterance.voice = idMaleVoice;
             utterance.lang = 'id-ID';
             utterance.rate = 1.0; 
-            utterance.pitch = 0.8; // Suara tegas laki-laki
+            utterance.pitch = 0.8; 
 
             utterance.onstart = () => {
-                btnText.innerText = "⏹ Berhenti Mendengarkan";
+                btnText.innerText = "⏹ Berhenti";
+                progCont.style.display = 'block';
+                music.play(); // Putar musik saat suara mulai
             };
 
             utterance.onend = () => {
                 btnText.innerText = "▶ Putar Ulang";
+                music.pause();
+                music.currentTime = 0;
+                progCont.style.display = 'none';
+            };
+
+            // Animasi progress bar sederhana
+            let charIndex = 0;
+            utterance.onboundary = (event) => {
+                let percent = (event.charIndex / teksRenungan.length) * 100;
+                progBar.style.width = percent + '%';
             };
 
             window.speechSynthesis.speak(utterance);
         }
     }
 
-    // Solusi Anti-Nyangkut
     window.addEventListener('beforeunload', () => { window.speechSynthesis.cancel(); });
-    window.addEventListener('load', () => { window.speechSynthesis.cancel(); });
-    
-    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 </script>
 </body>
 </html>
