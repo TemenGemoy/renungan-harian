@@ -6,54 +6,59 @@
     <title>Renungan Harian</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background: #020617; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: white; overflow-x: hidden; }
-        .particle { position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 50%; bottom: -10px; animation: float 15s linear infinite; }
+        body { font-family: 'Poppins', sans-serif; background: #020617; display: flex; flex-direction: column; min-height: 100vh; margin: 0; color: white; overflow: hidden; }
+        
+        /* Particle Background */
+        .particle { position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 50%; bottom: -10px; animation: float 15s linear infinite; z-index: 0; }
         @keyframes float { from { transform: translateY(0); } to { transform: translateY(-110vh); } }
-        
-        .wrapper { display: flex; gap: 20px; width: 95%; max-width: 1400px; align-items: stretch; justify-content: center; flex-wrap: wrap; z-index: 10; padding: 20px; }
 
-        .side-panel { flex: 1; min-width: 320px; background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(15px); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; height: 620px; box-sizing: border-box; }
-        
-        .main-card { width: 400px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(25px); padding: 35px; border-radius: 45px; box-shadow: 0 50px 100px rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.1); text-align: center; align-self: center; box-sizing: border-box; }
+        .wrapper { display: flex; flex: 1; gap: 20px; width: 95%; max-width: 1400px; align-items: center; justify-content: center; z-index: 10; padding: 20px; margin: 0 auto; margin-bottom: 100px; }
 
-        .bible-controls { display: flex; gap: 10px; margin-bottom: 15px; }
-        select { background: #1e293b; color: white; border: 1px solid #38bdf8; padding: 10px; border-radius: 12px; flex: 1; cursor: pointer; font-family: 'Poppins'; outline: none; }
+        /* Sisi Kiri: Search Lagu Rohani */
+        .side-panel { flex: 1; min-width: 320px; background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(15px); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; height: 500px; }
         
-        .bible-viewer { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; text-align: left; font-size: 0.95rem; line-height: 1.8; border: 1px solid rgba(255,255,255,0.05); }
-        .bible-viewer::-webkit-scrollbar { width: 6px; }
-        .bible-viewer::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
-        
-        .verse { margin-bottom: 12px; display: block; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 8px; }
-        .v-num { color: #38bdf8; font-weight: bold; margin-right: 10px; font-size: 0.8rem; }
+        /* Kartu Utama */
+        .main-card { width: 380px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(25px); padding: 30px; border-radius: 45px; box-shadow: 0 50px 100px rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.1); text-align: center; }
 
-        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; outline: none; font-family: 'Poppins'; margin-bottom: 15px; }
-        .result-box { flex: 1; overflow-y: auto; font-size: 0.9rem; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); line-height: 1.6; }
-
-        .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 30px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 30px; overflow: hidden; margin-bottom: 20px; }
         .image-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(40%); }
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; }
-        .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.2rem; line-height: 1.6; font-style: italic; }
+        .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.1rem; line-height: 1.5; font-style: italic; }
 
-        h3 { font-size: 1.1rem; color: #38bdf8; margin: 0 0 15px 0; letter-spacing: 1px; }
-        button#btn-play { background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); color: white; border: none; padding: 20px; border-radius: 50px; font-weight: 600; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2); }
+        /* Spotify-like Player (Bottom) */
+        .player-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 90px; background: #000; border-top: 1px solid #282828; display: flex; align-items: center; padding: 0 20px; z-index: 100; justify-content: space-between; }
+        .song-info { display: flex; align-items: center; gap: 15px; width: 30%; }
+        .song-info img { width: 56px; height: 56px; border-radius: 4px; }
+        .song-title { font-size: 0.9rem; font-weight: 600; }
+        .song-artist { font-size: 0.75rem; color: #b3b3b3; }
 
-        @media (max-width: 1100px) { .side-panel { min-width: 100%; height: 450px; } .wrapper { flex-direction: column; align-items: center; } }
+        .player-controls { display: flex; flex-direction: column; align-items: center; width: 40%; gap: 8px; }
+        .ctrl-btns { display: flex; align-items: center; gap: 25px; font-size: 1.2rem; cursor: pointer; }
+        .play-pause-circle { width: 35px; height: 35px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; }
+        
+        .progress-container { display: flex; align-items: center; gap: 10px; width: 100%; font-size: 0.7rem; color: #b3b3b3; }
+        .progress-bg { flex: 1; height: 4px; background: #4d4d4d; border-radius: 2px; position: relative; overflow: hidden; }
+        .progress-fill { width: 30%; height: 100%; background: white; }
+
+        /* Search Styles */
+        .search-box { background: rgba(255,255,255,0.1); border: none; padding: 12px; border-radius: 10px; color: white; width: 100%; margin-bottom: 15px; outline: none; }
+        .song-list { overflow-y: auto; flex: 1; }
+        .song-item { padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .song-item:hover { background: rgba(255,255,255,0.1); }
+        .song-item.active { color: #1db954; }
+
+        button#btn-renungan { background: #1db954; color: white; border: none; padding: 15px; border-radius: 30px; font-weight: 600; width: 100%; cursor: pointer; transition: 0.3s; }
+        button#btn-renungan:hover { transform: scale(1.02); background: #1ed760; }
     </style>
 </head>
 <body onload="initApp()">
 
-<audio id="bg-music" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
-</audio>
-
 <div class="wrapper">
     <div class="side-panel">
-        <h3>📖 Alkitab Indonesia</h3>
-        <div class="bible-controls">
-            <select id="select-kitab" onchange="loadPasal()"></select>
-            <select id="select-pasal" onchange="getAyat()"></select>
-        </div>
-        <div class="bible-viewer" id="bible-content">Memilih kitab...</div>
+        <h3 style="color:#1db954">🎵 Lagu Rohani</h3>
+        <input type="text" class="search-box" id="search-song" placeholder="Cari lagu rohani..." onkeyup="filterSongs()">
+        <div class="song-list" id="song-list">
+            </div>
     </div>
 
     <div class="main-card">
@@ -63,106 +68,64 @@
                 <div class="ayat-isi" id="display-isi">Menyiapkan berkat...</div>
             </div>
         </div>
-        <button onclick="mulaiRenungan()" id="btn-play">▶ Putar Renungan</button>
+        <button onclick="toggleRenungan()" id="btn-renungan">▶ Putar Renungan Hari Ini</button>
     </div>
 
     <div class="side-panel">
-        <h3>💡 Cari Motivasi</h3>
-        <input type="text" id="input-motivasi" class="search-box" placeholder="Ketik: Semangat, Sembuh, Sabar..." onkeyup="if(event.keyCode===13) cariMotivasi()">
-        <div class="result-box" id="res-motivasi">Cari ayat penguatan di sini...</div>
+        <h3 style="color:#38bdf8">💡 Kata Motivasi</h3>
+        <div style="font-size: 0.9rem; line-height: 1.8; color: #cbd5e1;">
+            "Sebab Aku ini tahu rancangan-rancangan apa yang ada pada-Ku mengenai kamu, demikianlah firman TUHAN, yaitu rancangan damai sejahtera dan bukan rancangan kecelakaan, untuk memberikan kepadamu hari depan yang penuh harapan." (Yeremia 29:11)
+        </div>
     </div>
 </div>
 
-<script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec"; 
-    let teksRenungan = "";
-    const music = document.getElementById('bg-music');
-    music.volume = 0.15;
+<div class="player-bar">
+    <div class="song-info">
+        <img id="player-img" src="https://via.placeholder.com/60" alt="Cover">
+        <div>
+            <div class="song-title" id="player-title">Pilih Lagu</div>
+            <div class="song-artist" id="player-artist">Lagu Rohani</div>
+        </div>
+    </div>
+    
+    <div class="player-controls">
+        <div class="ctrl-btns">
+            <span>⏮</span>
+            <div class="play-pause-circle" onclick="toggleMusic()">
+                <span id="play-icon">▶</span>
+            </div>
+            <span>⏭</span>
+        </div>
+        <div class="progress-container">
+            <span id="curr-time">0:00</span>
+            <div class="progress-bg"><div class="progress-fill" id="prog-fill"></div></div>
+            <span id="total-time">0:00</span>
+        </div>
+    </div>
 
-    // Database Lengkap 66 Kitab dengan Jumlah Pasal yang Benar
-    const bibleData = {
-        "kejadian": { n: "Kejadian", p: 50 }, "keluaran": { n: "Keluaran", p: 40 }, "imamat": { n: "Imamat", p: 27 },
-        "bilangan": { n: "Bilangan", p: 36 }, "ulangan": { n: "Ulangan", p: 34 }, "yosua": { n: "Yosua", p: 24 },
-        "hakim-hakim": { n: "Hakim-hakim", p: 21 }, "rut": { n: "Rut", p: 4 }, "1-samuel": { n: "1 Samuel", p: 31 },
-        "2-samuel": { n: "2 Samuel", p: 24 }, "1-raja-raja": { n: "1 Raja-raja", p: 22 }, "2-raja-raja": { n: "2 Raja-raja", p: 25 },
-        "1-tawarikh": { n: "1 Tawarikh", p: 29 }, "2-tawarikh": { n: "2 Tawarikh", p: 36 }, "ezra": { n: "Ezra", p: 10 },
-        "nehemia": { n: "Nehemia", p: 13 }, "ester": { n: "Ester", p: 10 }, "ayub": { n: "Ayub", p: 42 },
-        "mazmur": { n: "Mazmur", p: 150 }, "amsal": { n: "Amsal", p: 31 }, "pengkhotbah": { n: "Pengkhotbah", p: 12 },
-        "kidung-agung": { n: "Kidung Agung", p: 8 }, "yesaya": { n: "Yesaya", p: 66 }, "yeremia": { n: "Yeremia", p: 52 },
-        "ratapan": { n: "Ratapan", p: 5 }, "yehezkiel": { n: "Yehezkiel", p: 48 }, "daniel": { n: "Daniel", p: 12 },
-        "hosea": { n: "Hosea", p: 14 }, "yoel": { n: "Yoel", p: 3 }, "amos": { n: "Amos", p: 9 },
-        "obaja": { n: "Obaja", p: 1 }, "yunus": { n: "Yunus", p: 4 }, "mikha": { n: "Mikha", p: 7 },
-        "nahum": { n: "Nahum", p: 3 }, "habakuk": { n: "Habakuk", p: 3 }, "zefanya": { n: "Zefanya", p: 3 },
-        "hagai": { n: "Hagai", p: 2 }, "zakharia": { n: "Zakharia", p: 14 }, "maleakhi": { n: "Maleakhi", p: 4 },
-        "matius": { n: "Matius", p: 28 }, "markus": { n: "Markus", p: 16 }, "lukas": { n: "Lukas", p: 24 },
-        "yohanes": { n: "Yohanes", p: 21 }, "kisah-para-rasul": { n: "Kisah Para Rasul", p: 28 }, "roma": { n: "Roma", p: 16 },
-        "1-korintus": { n: "1 Korintus", p: 16 }, "2-korintus": { n: "2 Korintus", p: 13 }, "galatia": { n: "Galatia", p: 6 },
-        "efesus": { n: "Efesus", p: 6 }, "filipi": { n: "Filipi", p: 4 }, "kolose": { n: "Kolose", p: 4 },
-        "1-tesalonika": { n: "1 Tesalonika", p: 5 }, "2-tesalonika": { n: "2 Tesalonika", p: 3 }, "1-timotius": { n: "1 Timotius", p: 6 },
-        "2-timotius": { n: "2 Timotius", p: 4 }, "titus": { n: "Titus", p: 3 }, "filemon": { n: "Filemon", p: 1 },
-        "ibrani": { n: "Ibrani", p: 13 }, "yakobus": { n: "Yakobus", p: 5 }, "1-petrus": { n: "1 Petrus", p: 5 },
-        "2-petrus": { n: "2 Petrus", p: 3 }, "1-yohanes": { n: "1 Yohanes", p: 5 }, "2-yohanes": { n: "2 Yohanes", p: 1 },
-        "3-yohanes": { n: "3 Yohanes", p: 1 }, "yudas": { n: "Yudas", p: 1 }, "wahyu": { n: "Wahyu", p: 22 }
-    };
+    <div style="width: 30%; display: flex; justify-content: flex-end; gap: 15px; color: #b3b3b3;">
+        <span>🔊</span>
+        <div style="width: 100px; height: 4px; background: #4d4d4d; align-self: center; border-radius: 2px;"></div>
+    </div>
+</div>
+
+<audio id="main-audio" loop></audio>
+
+<script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec";
+    const audio = document.getElementById('main-audio');
+    let teksRenungan = "";
+    let isRenunganPlaying = false;
+
+    // Database Lagu Rohani (William bisa tambah URL MP3 di sini)
+    const songs = [
+        { title: "Waktu Tuhan", artist: "NDC Worship", src: "https://www.chosic.com/wp-content/uploads/2021/07/Rain-and-Pianos.mp3", img: "https://i.scdn.co/image/ab67616d0000b27376c7577583a69634d57c6691" },
+        { title: "Sampai Akhir Hidupku", artist: "JPCC Worship", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", img: "https://i.scdn.co/image/ab67616d0000b2731804b90161474f3885d9b69b" },
+        { title: "Kebaikan Tuhan", artist: "Bethel Music", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", img: "https://i.scdn.co/image/ab67616d0000b27361730953a92576b88950d892" }
+    ];
 
     function initApp() {
-        const selKitab = document.getElementById('select-kitab');
-        for (let key in bibleData) {
-            let opt = document.createElement('option');
-            opt.value = key;
-            opt.text = bibleData[key].n;
-            selKitab.add(opt);
-        }
-        loadPasal();
-        loadRenungan();
-    }
-
-    function loadPasal() {
-        const selPasal = document.getElementById('select-pasal');
-        selPasal.innerHTML = "";
-        const kitabKey = document.getElementById('select-kitab').value;
-        const totalPasal = bibleData[kitabKey].p;
-        for(let i=1; i<=totalPasal; i++) {
-            let opt = document.createElement('option');
-            opt.value = i - 1; 
-            opt.text = "Pasal " + i;
-            selPasal.add(opt);
-        }
-        getAyat();
-    }
-
-    async function getAyat() {
-        const kitabKey = document.getElementById('select-kitab').value;
-        const pasalIdx = document.getElementById('select-pasal').value;
-        const viewer = document.getElementById('bible-content');
-        viewer.innerHTML = "Memuat Firman...";
-        
-        try {
-            // Mengambil file JSON dari repo Erwindo Sianipar sesuai key yang sudah dipetakan
-            const res = await fetch(`https://raw.githubusercontent.com/erwindosianipar/api-alkitab/master/data/${kitabKey}.json`);
-            if(!res.ok) throw new Error("File tidak ditemukan");
-            const data = await res.json();
-            const chapter = data.chapters[pasalIdx];
-            
-            viewer.innerHTML = `<strong>${data.name} ${parseInt(pasalIdx)+1}</strong><br><br>` + 
-                chapter.verses.map(v => `<span class="verse"><span class="v-num">${v.number}</span>${v.text}</span>`).join('');
-            viewer.scrollTop = 0;
-        } catch (e) {
-            viewer.innerHTML = "Gagal memuat ayat. Kitab ini belum tersedia atau koneksi terputus.";
-        }
-    }
-
-    function cariMotivasi() {
-        const dbMotivasi = {
-            "semangat": "Roma 12:11 - Janganlah hendaknya kerajinanmu kendor, biarlah rohmu menyala-nyala dan layanilah Tuhan.",
-            "sembuh": "Yeremia 17:14 - Sembuhkanlah aku, ya TUHAN, maka aku akan sembuh; selamatkanlah aku, maka aku akan selamat.",
-            "sabar": "Roma 12:12 - Bersukacitalah dalam pengharapan, sabarlah dalam kesesakan, dan bertekunlah dalam doa!"
-        };
-        const val = document.getElementById('input-motivasi').value.toLowerCase();
-        document.getElementById('res-motivasi').innerText = dbMotivasi[val] || "Coba: Semangat, Sembuh, Sabar.";
-    }
-
-    function loadRenungan() {
+        renderSongs(songs);
         fetch(GAS_URL).then(res => res.json()).then(data => {
             teksRenungan = data.teksNarasi;
             document.getElementById('display-image').src = data.imageUrl;
@@ -170,25 +133,75 @@
         });
     }
 
-    function mulaiRenungan() {
+    function renderSongs(list) {
+        const container = document.getElementById('song-list');
+        container.innerHTML = list.map((s, i) => `
+            <div class="song-item" onclick="playSong(${i})">
+                <img src="${s.img}" style="width:40px; border-radius:4px;">
+                <div>
+                    <div style="font-size:0.85rem">${s.title}</div>
+                    <div style="font-size:0.7rem; color:#b3b3b3">${s.artist}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function playSong(idx) {
+        const s = songs[idx];
+        audio.src = s.src;
+        document.getElementById('player-title').innerText = s.title;
+        document.getElementById('player-artist').innerText = s.artist;
+        document.getElementById('player-img').src = s.img;
+        audio.play();
+        document.getElementById('play-icon').innerText = "⏸";
+    }
+
+    function toggleMusic() {
+        if(audio.paused) { audio.play(); document.getElementById('play-icon').innerText = "⏸"; }
+        else { audio.pause(); document.getElementById('play-icon').innerText = "▶"; }
+    }
+
+    function toggleRenungan() {
+        const btn = document.getElementById('btn-renungan');
         if (window.speechSynthesis.speaking) {
             window.speechSynthesis.cancel();
-            music.pause();
+            btn.innerText = "▶ Putar Renungan Hari Ini";
+            // Lanjut musik setelah renungan berhenti manual
+            audio.play();
+            document.getElementById('play-icon').innerText = "⏸";
             return;
         }
+
         const utt = new SpeechSynthesisUtterance(teksRenungan);
         const voices = window.speechSynthesis.getVoices();
-        const femaleVoice = voices.find(v => v.lang.includes('id') && !v.name.toLowerCase().includes('male'));
-        if(femaleVoice) utt.voice = femaleVoice;
-        utt.pitch = 1.3; utt.onstart = () => music.play();
-        utt.onend = () => music.pause();
+        utt.voice = voices.find(v => v.lang.includes('id') && !v.name.toLowerCase().includes('male'));
+        
+        utt.onstart = () => {
+            btn.innerText = "⏹ Berhenti Mendengarkan";
+            audio.pause(); // Musik berhenti saat renungan mulai
+            document.getElementById('play-icon').innerText = "▶";
+        };
+
+        utt.onend = () => {
+            btn.innerText = "▶ Putar Ulang";
+            audio.play(); // Musik lanjut otomatis saat renungan selesai
+            document.getElementById('play-icon').innerText = "⏸";
+        };
+
         window.speechSynthesis.speak(utt);
     }
 
+    // Partikel hiasan
     for(let i=0; i<15; i++) {
         let p = document.createElement('div'); p.className = 'particle';
         p.style.left = Math.random() * 100 + 'vw'; p.style.animationDelay = Math.random() * 15 + 's';
         document.body.appendChild(p);
+    }
+
+    // Update progress bar musik
+    audio.ontimeupdate = () => {
+        const pct = (audio.currentTime / audio.duration) * 100;
+        document.getElementById('prog-fill').style.width = pct + "%";
     }
 </script>
 </body>
