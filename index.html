@@ -26,9 +26,7 @@
         .verse { margin-bottom: 12px; display: block; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 8px; }
         .v-num { color: #38bdf8; font-weight: bold; margin-right: 10px; font-size: 0.8rem; }
 
-        /* Fix Kotak Motivasi Kanan */
-        .search-container { margin-bottom: 15px; }
-        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; outline: none; font-family: 'Poppins'; }
+        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; outline: none; font-family: 'Poppins'; margin-bottom: 15px; }
         .result-box { flex: 1; overflow-y: auto; font-size: 0.9rem; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); line-height: 1.6; }
 
         .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 30px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
@@ -71,9 +69,7 @@
 
     <div class="side-panel">
         <h3>💡 Cari Motivasi</h3>
-        <div class="search-container">
-            <input type="text" id="input-motivasi" class="search-box" placeholder="Ketik: Semangat, Sembuh, Sabar..." onkeyup="if(event.keyCode===13) cariMotivasi()">
-        </div>
+        <input type="text" id="input-motivasi" class="search-box" placeholder="Ketik: Semangat, Sembuh, Sabar..." onkeyup="if(event.keyCode===13) cariMotivasi()">
         <div class="result-box" id="res-motivasi">Cari ayat penguatan di sini...</div>
     </div>
 </div>
@@ -84,30 +80,29 @@
     const music = document.getElementById('bg-music');
     music.volume = 0.15;
 
-    // Menggunakan list kitab dengan ID resmi untuk API yang lebih stabil
     const kitabIndo = [
-        { nama: "Kejadian", id: "GEN" }, { nama: "Keluaran", id: "EXO" }, { nama: "Imamat", id: "LEV" },
-        { nama: "Bilangan", id: "NUM" }, { nama: "Ulangan", id: "DEU" }, { nama: "Yosua", id: "JOS" },
-        { nama: "Hakim-hakim", id: "JDG" }, { nama: "Rut", id: "RUT" }, { nama: "1 Samuel", id: "1SA" },
-        { nama: "2 Samuel", id: "2SA" }, { nama: "1 Raja-raja", id: "1KI" }, { nama: "2 Raja-raja", id: "2KI" },
-        { nama: "1 Tawarikh", id: "1CH" }, { nama: "2 Tawarikh", id: "2CH" }, { nama: "Ezra", id: "EZR" },
-        { nama: "Nehemia", id: "NEH" }, { nama: "Ester", id: "EST" }, { nama: "Ayub", id: "JOB" },
-        { nama: "Mazmur", id: "PSA" }, { nama: "Amsal", id: "PRO" }, { nama: "Pengkhotbah", id: "ECC" },
-        { nama: "Kidung Agung", id: "SNG" }, { nama: "Yesaya", id: "ISA" }, { nama: "Yeremia", id: "JER" },
-        { nama: "Ratapan", id: "LAM" }, { nama: "Yehezkiel", id: "EZK" }, { nama: "Daniel", id: "DAN" },
-        { nama: "Hosea", id: "HOS" }, { nama: "Yoel", id: "JOL" }, { nama: "Amos", id: "AMO" },
-        { nama: "Obaja", id: "OBA" }, { nama: "Yunus", id: "JON" }, { nama: "Mikha", id: "MIC" },
-        { nama: "Nahum", id: "NAM" }, { nama: "Habakuk", id: "HAB" }, { nama: "Zefanya", id: "ZEP" },
-        { nama: "Hagai", id: "HAG" }, { nama: "Zakharia", id: "ZEC" }, { nama: "Maleakhi", id: "MAL" },
-        { nama: "Matius", id: "MAT" }, { nama: "Markus", id: "MRK" }, { nama: "Lukas", id: "LUK" },
-        { nama: "Yohanes", id: "JHN" }, { nama: "Kisah Para Rasul", id: "ACT" }, { nama: "Roma", id: "ROM" },
-        { nama: "1 Korintus", id: "1CO" }, { nama: "2 Korintus", id: "2CO" }, { nama: "Galatia", id: "GAL" },
-        { nama: "Efesus", id: "EPH" }, { nama: "Filipi", id: "PHP" }, { nama: "Kolose", id: "COL" },
-        { nama: "1 Tesalonika", id: "1TH" }, { nama: "2 Tesalonika", id: "2TH" }, { nama: "1 Timotius", id: "1TI" },
-        { nama: "2 Timotius", id: "2TI" }, { nama: "Titus", id: "TIT" }, { nama: "Filemon", id: "PHM" },
-        { nama: "Ibrani", id: "HEB" }, { nama: "Yakobus", id: "JAS" }, { nama: "1 Petrus", id: "1PE" },
-        { nama: "2 Petrus", id: "2PE" }, { nama: "1 Yohanes", id: "1JN" }, { nama: "2 Yohanes", id: "2JN" },
-        { nama: "3 Yohanes", id: "3JN" }, { nama: "Yudas", id: "JUD" }, { nama: "Wahyu", id: "REV" }
+        { nama: "Kejadian", id: "Kejadian" }, { nama: "Keluaran", id: "Keluaran" }, { nama: "Imamat", id: "Imamat" },
+        { nama: "Bilangan", id: "Bilangan" }, { nama: "Ulangan", id: "Ulangan" }, { nama: "Yosua", id: "Yosua" },
+        { nama: "Hakim-hakim", id: "Hakim-hakim" }, { nama: "Rut", id: "Rut" }, { nama: "1 Samuel", id: "1Samuel" },
+        { nama: "2 Samuel", id: "2Samuel" }, { nama: "1 Raja-raja", id: "1Raja-raja" }, { nama: "2 Raja-raja", id: "2Raja-raja" },
+        { nama: "1 Tawarikh", id: "1Tawarikh" }, { nama: "2 Tawarikh", id: "2Tawarikh" }, { nama: "Ezra", id: "Ezra" },
+        { nama: "Nehemia", id: "Nehemia" }, { nama: "Ester", id: "Ester" }, { nama: "Ayub", id: "Ayub" },
+        { nama: "Mazmur", id: "Mazmur" }, { nama: "Amsal", id: "Amsal" }, { nama: "Pengkhotbah", id: "Pengkhotbah" },
+        { nama: "Kidung Agung", id: "KidungAgung" }, { nama: "Yesaya", id: "Yesaya" }, { nama: "Yeremia", id: "Yeremia" },
+        { nama: "Ratapan", id: "Ratapan" }, { nama: "Yehezkiel", id: "Yehezkiel" }, { nama: "Daniel", id: "Daniel" },
+        { nama: "Hosea", id: "Hosea" }, { nama: "Yoel", id: "Yoel" }, { nama: "Amos", id: "Amos" },
+        { nama: "Obaja", id: "Obaja" }, { nama: "Yunus", id: "Yunus" }, { nama: "Mikha", id: "Mikha" },
+        { nama: "Nahum", id: "Nahum" }, { nama: "Habakuk", id: "Habakuk" }, { nama: "Zefanya", id: "Zefanya" },
+        { nama: "Hagai", id: "Hagai" }, { nama: "Zakharia", id: "Zakharia" }, { nama: "Maleakhi", id: "Maleakhi" },
+        { nama: "Matius", id: "Matius" }, { nama: "Markus", id: "Markus" }, { nama: "Lukas", id: "Lukas" },
+        { nama: "Yohanes", id: "Yohanes" }, { nama: "Kisah Para Rasul", id: "KisahParaRasul" }, { nama: "Roma", id: "Roma" },
+        { nama: "1 Korintus", id: "1Korintus" }, { nama: "2 Korintus", id: "2Korintus" }, { nama: "Galatia", id: "Galatia" },
+        { nama: "Efesus", id: "Efesus" }, { nama: "Filipi", id: "Filipi" }, { nama: "Kolose", id: "Kolose" },
+        { nama: "1 Tesalonika", id: "1Tesalonika" }, { nama: "2 Tesalonika", id: "2Tesalonika" }, { nama: "1 Timotius", id: "1Timotius" },
+        { nama: "2 Timotius", id: "2Timotius" }, { nama: "Titus", id: "Titus" }, { nama: "Filemon", id: "Filemon" },
+        { nama: "Ibrani", id: "Ibrani" }, { nama: "Yakobus", id: "Yakobus" }, { nama: "1 Petrus", id: "1Petrus" },
+        { nama: "2 Petrus", id: "2Petrus" }, { nama: "1 Yohanes", id: "1Yohanes" }, { nama: "2 Yohanes", id: "2Yohanes" },
+        { nama: "3 Yohanes", id: "3Yohanes" }, { nama: "Yudas", id: "Yudas" }, { nama: "Wahyu", id: "Wahyu" }
     ];
 
     function initApp() {
@@ -125,7 +120,7 @@
         const selPasal = document.getElementById('select-pasal');
         selPasal.innerHTML = "";
         const id = document.getElementById('select-kitab').value;
-        const maxPasal = id === "PSA" ? 150 : 60; 
+        const maxPasal = id === "Mazmur" ? 150 : 66; 
         for(let i=1; i<=maxPasal; i++) {
             let opt = document.createElement('option');
             opt.value = i; opt.text = "Pasal " + i;
@@ -135,26 +130,25 @@
     }
 
     async function getAyat() {
-        const kitabId = document.getElementById('select-kitab').value;
-        const namaKitab = document.getElementById('select-kitab').options[document.getElementById('select-kitab').selectedIndex].text;
+        const kitab = document.getElementById('select-kitab').value;
         const pasal = document.getElementById('select-pasal').value;
         const viewer = document.getElementById('bible-content');
-        viewer.innerHTML = "Memuat ayat...";
+        viewer.innerHTML = "Memuat Firman...";
         
         try {
-            // Gunakan API baru yang lebih stabil untuk bahasa Indonesia
-            const res = await fetch(`https://bible-api.com/${namaKitab}+${pasal}?translation=indonesia`);
+            // Menggunakan Alkitab API Indonesia yang baru
+            const res = await fetch(`https://alkitab.mobi/api/ai/tb/${kitab}/${pasal}`);
             const data = await res.json();
             
-            if (data.verses) {
-                viewer.innerHTML = `<strong>${namaKitab} ${pasal}</strong><br><br>` + 
-                    data.verses.map(v => `<span class="verse"><span class="v-num">${v.verse}</span>${v.text}</span>`).join('');
+            if (data.verses && data.verses.length > 0) {
+                viewer.innerHTML = `<strong>${kitab} ${pasal}</strong><br><br>` + 
+                    data.verses.map(v => `<span class="verse"><span class="v-num">${v.verse}</span>${v.content}</span>`).join('');
             } else {
-                // Fallback jika API pertama gagal
                 viewer.innerHTML = "Ayat tidak ditemukan untuk pasal ini.";
             }
         } catch (e) {
-            viewer.innerHTML = "Gagal memuat Alkitab Indonesia. Silakan pilih kitab/pasal lain atau refresh halaman.";
+            // Fallback jika API pertama gagal
+            viewer.innerHTML = "Gagal memuat Alkitab Indonesia dari server utama. Silakan coba lagi nanti.";
         }
     }
 
@@ -162,8 +156,7 @@
         "semangat": "Roma 12:11 - Janganlah hendaknya kerajinanmu kendor, biarlah rohmu menyala-nyala dan layanilah Tuhan.",
         "sembuh": "Yeremia 17:14 - Sembuhkanlah aku, ya TUHAN, maka aku akan sembuh; selamatkanlah aku, maka aku akan selamat.",
         "sabar": "Roma 12:12 - Bersukacitalah dalam pengharapan, sabarlah dalam kesesakan, dan bertekunlah dalam doa!",
-        "takut": "Yesaya 41:10 - Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu.",
-        "putus asa": "Mazmur 34:19 - TUHAN itu dekat kepada orang-orang yang patah hati, dan Ia menyelamatkan orang-orang yang remuk jiwanya."
+        "takut": "Yesaya 41:10 - Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu."
     };
 
     function cariMotivasi() {
@@ -190,28 +183,24 @@
         const utt = new SpeechSynthesisUtterance(teksRenungan);
         const voices = window.speechSynthesis.getVoices();
         
-        // --- FIX SUARA PEREMPUAN ---
-        // Cari suara yang Bahasa Indonesia (id-ID) dan BUKAN laki-laki
+        // Pilihan suara khusus Perempuan Indonesia
         const femaleVoice = voices.find(v => v.lang.includes('id') && 
             (v.name.toLowerCase().includes('female') || 
              v.name.toLowerCase().includes('perempuan') || 
-             v.name.toLowerCase().includes('gadget') ||
+             v.name.toLowerCase().includes('santi') ||
+             v.name.toLowerCase().includes('google') ||
              !v.name.toLowerCase().includes('male')));
              
-        if(femaleVoice) {
-            utt.voice = femaleVoice;
-        }
-        
+        if(femaleVoice) utt.voice = femaleVoice;
         utt.lang = 'id-ID';
-        utt.pitch = 1.2; // Pitch agak tinggi agar lebih feminin
-        utt.rate = 1.0; 
+        utt.pitch = 1.25; // Pitch tinggi agar feminin
+        utt.rate = 0.95; 
         
         utt.onstart = () => { music.play(); document.getElementById('btn-play').innerText = "⏹ Berhenti"; };
         utt.onend = () => { music.pause(); document.getElementById('btn-play').innerText = "▶ Putar Ulang"; };
         window.speechSynthesis.speak(utt);
     }
 
-    // Partikel
     for(let i=0; i<15; i++) {
         let p = document.createElement('div'); p.className = 'particle';
         p.style.left = Math.random() * 100 + 'vw'; p.style.animationDelay = Math.random() * 15 + 's';
