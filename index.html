@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Renungan Harian</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=81I6r8q0"></script>
     <style>
         body { font-family: 'Poppins', sans-serif; background: #0f172a; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: white; }
         .container { background: #1e293b; padding: 30px; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); max-width: 420px; width: 90%; text-align: center; border: 1px solid #334155; }
@@ -21,7 +22,7 @@
             font-size: 1.1rem; transition: all 0.3s ease;
         }
         button:active { transform: scale(0.96); }
-        button:disabled { background: #475569; cursor: not-allowed; opacity: 0.7; }
+        button:disabled { background: #475569; cursor: not-allowed; }
         .loader { border: 4px solid #334155; border-top: 4px solid #38bdf8; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 80px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -48,7 +49,6 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec"; 
     
     let teksNarasi = "";
-    let audio = new Audio();
 
     fetch(GAS_URL)
         .then(res => res.json())
@@ -67,27 +67,26 @@
 
         if (!teksNarasi) return;
 
-        btn.disabled = true;
-        btnText.innerText = "⏳ Mempersiapkan Suara...";
+        // Cek apakah suara sedang diputar
+        if (responsiveVoice.isPlaying()) {
+            responsiveVoice.cancel();
+            btnText.innerText = "▶ Putar Renungan";
+            return;
+        }
 
-        // Menggunakan jembatan suara Microsoft Edge (Ardi - Suara Pria Indonesia yang Tenang)
-        const voiceName = "id-ID-ArdiNeural"; 
-        const proxyUrl = `https://api.vve.cc/api/v2/tts?text=${encodeURIComponent(teksNarasi)}&voice=${voiceName}`;
-
-        audio.src = proxyUrl;
-        audio.play().then(() => {
-            btnText.innerText = "🔊 Mendengarkan...";
-            btn.disabled = false;
-        }).catch(err => {
-            console.error(err);
-            btn.disabled = false;
-            btnText.innerText = "▶ Gagal, Coba Lagi";
+        btnText.innerText = "🔊 Mendengarkan...";
+        
+        // Memulai suara dengan Bahasa Indonesia
+        responsiveVoice.speak(teksNarasi, "Indonesian Male", {
+            pitch: 1, 
+            rate: 0.9, // Kecepatan bicara lebih tenang
+            onstart: () => {
+                console.log("Suara dimulai");
+            },
+            onend: () => {
+                btnText.innerText = "▶ Putar Ulang";
+            }
         });
-
-        audio.onended = () => {
-            btnText.innerText = "▶ Putar Ulang";
-            btn.disabled = false;
-        };
     }
 </script>
 </body>
