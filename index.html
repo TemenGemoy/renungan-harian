@@ -21,7 +21,7 @@
             font-size: 1.1rem; transition: all 0.3s ease;
         }
         button:active { transform: scale(0.96); }
-        button:disabled { background: #475569; cursor: not-allowed; opacity: 0.8; }
+        button:disabled { background: #475569; cursor: not-allowed; opacity: 0.7; }
         .loader { border: 4px solid #334155; border-top: 4px solid #38bdf8; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 80px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -38,7 +38,7 @@
                 <div class="ayat-ref" id="display-label"></div>
             </div>
         </div>
-        <button id="btn-audio" onclick="toggleAudio()">
+        <button id="btn-audio" onclick="playRenungan()">
             <span id="btn-text">▶ Putar Renungan Hari Ini</span>
         </button>
     </div>
@@ -47,63 +47,48 @@
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec"; 
     
-    let teksRenungan = "";
-    let synth = window.speechSynthesis;
-    let utterance = null;
-    let isPlaying = false;
+    let teksNarasi = "";
+    let audio = new Audio();
 
-    // Load data dari GAS
     fetch(GAS_URL)
         .then(res => res.json())
         .then(data => {
-            teksRenungan = data.teksNarasi;
+            teksNarasi = data.teksNarasi;
             document.getElementById('display-image').src = data.imageUrl;
             document.getElementById('display-isi').innerText = `"${data.isiAyat}"`;
             document.getElementById('display-label').innerText = data.labelAyat;
-            
             document.getElementById('loading').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
         });
 
-    function toggleAudio() {
+    function playRenungan() {
+        const btn = document.getElementById('btn-audio');
         const btnText = document.getElementById('btn-text');
 
-        if (isPlaying) {
-            synth.cancel();
-            isPlaying = false;
-            btnText.innerText = "▶ Putar Renungan";
-            return;
-        }
+        if (!teksNarasi) return;
 
-        if (teksRenungan) {
-            utterance = new SpeechSynthesisUtterance(teksRenungan);
-            utterance.lang = 'id-ID'; // Menggunakan suara Bahasa Indonesia
-            utterance.rate = 0.9;     // Kecepatan sedikit melambat supaya lebih tenang
-            utterance.pitch = 1;
+        btn.disabled = true;
+        btnText.innerText = "⏳ Mempersiapkan Suara...";
 
-            utterance.onstart = () => {
-                isPlaying = true;
-                btnText.innerText = "⏹ Berhenti Mendengarkan";
-            };
+        // Menggunakan jembatan suara Microsoft Edge (Ardi - Suara Pria Indonesia yang Tenang)
+        const voiceName = "id-ID-ArdiNeural"; 
+        const proxyUrl = `https://api.vve.cc/api/v2/tts?text=${encodeURIComponent(teksNarasi)}&voice=${voiceName}`;
 
-            utterance.onend = () => {
-                isPlaying = false;
-                btnText.innerText = "▶ Putar Ulang";
-            };
+        audio.src = proxyUrl;
+        audio.play().then(() => {
+            btnText.innerText = "🔊 Mendengarkan...";
+            btn.disabled = false;
+        }).catch(err => {
+            console.error(err);
+            btn.disabled = false;
+            btnText.innerText = "▶ Gagal, Coba Lagi";
+        });
 
-            utterance.onerror = (e) => {
-                console.error(e);
-                alert("Maaf, suara tidak dapat dijalankan di browser ini.");
-            };
-
-            synth.speak(utterance);
-        }
+        audio.onended = () => {
+            btnText.innerText = "▶ Putar Ulang";
+            btn.disabled = false;
+        };
     }
-
-    // Pastikan suara berhenti jika halaman ditutup/pindah
-    window.onbeforeunload = function() {
-        synth.cancel();
-    };
 </script>
 </body>
 </html>
