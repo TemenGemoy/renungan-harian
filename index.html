@@ -100,6 +100,14 @@
     window.speechSynthesis.onvoiceschanged = () => {
         window.speechSynthesis.getVoices();
     };
-</script>
+</script>// Menghentikan suara secara paksa saat halaman di-refresh atau ditutup
+window.addEventListener('beforeunload', () => {
+    window.speechSynthesis.cancel();
+});
+
+// Menghentikan suara yang mungkin "nyangkut" dari sesi sebelumnya saat halaman baru terbuka
+window.addEventListener('load', () => {
+    window.speechSynthesis.cancel();
+});
 </body>
 </html>
