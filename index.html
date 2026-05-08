@@ -6,80 +6,89 @@
     <title>Renungan Harian</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <style>
-        @keyframes move { from { transform: translateY(0); opacity: 0.5; } to { transform: translateY(-100vh); opacity: 0; } }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 0.2; } 100% { transform: scale(1); opacity: 0.5; } }
-
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: #0f172a; 
+            background: #020617; 
             display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; margin: 0; color: white; overflow: hidden;
+            min-height: 100vh; margin: 0; color: white; overflow-x: hidden;
         }
 
-        .particle { position: absolute; width: 3px; height: 3px; background: white; border-radius: 50%; bottom: -10px; animation: move 12s linear infinite; }
+        /* Partikel Background */
+        .particle { position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,0.3); border-radius: 50%; bottom: -10px; animation: float 15s linear infinite; }
+        @keyframes float { from { transform: translateY(0); } to { transform: translateY(-110vh); } }
 
-        .container { 
-            background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px);
-            padding: 40px; border-radius: 50px; box-shadow: 0 40px 100px rgba(0,0,0,0.8); 
-            max-width: 450px; width: 90%; text-align: center; border: 1px solid rgba(255,255,255,0.1); z-index: 10;
+        /* Layout Utama agar Kanan-Kiri Terisi */
+        .wrapper { 
+            display: flex; gap: 30px; width: 95%; max-width: 1200px; align-items: center; 
+            justify-content: center; flex-wrap: wrap; z-index: 10;
         }
 
-        .image-card { 
-            position: relative; width: 100%; aspect-ratio: 1/1; 
-            border-radius: 35px; overflow: hidden; margin-bottom: 25px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        /* Panel Samping (Kiri & Kanan) */
+        .side-panel { 
+            flex: 1; min-width: 250px; background: rgba(30, 41, 59, 0.4); 
+            backdrop-filter: blur(10px); padding: 25px; border-radius: 30px; 
+            border: 1px solid rgba(255,255,255,0.05); text-align: left;
+            display: none; /* Muncul hanya di layar besar */
         }
-        .image-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(35%); transition: 0.5s; }
-        .image-card:hover img { filter: brightness(50%); transform: scale(1.05); }
 
+        @media (min-width: 1024px) { .side-panel { display: block; } }
+
+        /* Kotak Utama Tengah */
+        .main-card { 
+            width: 420px; background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px);
+            padding: 35px; border-radius: 45px; box-shadow: 0 50px 100px rgba(0,0,0,0.8); 
+            border: 1px solid rgba(255,255,255,0.1); text-align: center;
+        }
+
+        .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 35px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .image-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(35%); }
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; }
-        .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.4rem; line-height: 1.6; margin-bottom: 15px; font-style: italic; }
-        .ayat-ref { font-weight: 600; font-size: 0.9rem; color: #38bdf8; text-transform: uppercase; letter-spacing: 3px; }
-
-        /* Fitur Baru: Subtitle Berjalan */
-        #subtitle { min-height: 50px; margin: 20px 0; font-size: 0.95rem; color: #cbd5e1; font-style: italic; transition: 0.3s; }
+        .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.3rem; line-height: 1.6; font-style: italic; }
 
         button { 
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); 
-            color: white; border: none; padding: 22px; border-radius: 50px; 
-            font-family: 'Poppins'; cursor: pointer; font-weight: 600; width: 100%;
-            display: flex; align-items: center; justify-content: center; gap: 15px;
-            font-size: 1.1rem; box-shadow: 0 10px 25px rgba(56, 189, 248, 0.3);
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); color: white; border: none; 
+            padding: 20px; border-radius: 50px; font-weight: 600; width: 100%; cursor: pointer;
+            transition: 0.3s; box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
         }
 
-        /* Fitur Baru: Visualizer Sederhana */
-        .visualizer { display: flex; justify-content: center; gap: 5px; height: 20px; margin-top: 25px; display: none; }
-        .bar { width: 4px; background: #38bdf8; border-radius: 2px; animation: pulse 1s infinite; }
+        .status-badge { display: inline-block; padding: 5px 15px; background: rgba(56, 189, 248, 0.2); border-radius: 20px; font-size: 0.7rem; color: #38bdf8; margin-bottom: 15px; letter-spacing: 1px; }
+        
+        h3 { font-size: 1rem; margin-top: 0; color: #38bdf8; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .side-content { font-size: 0.85rem; color: #94a3b8; line-height: 1.7; }
     </style>
 </head>
 <body>
 
 <audio id="bg-music" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <source src="https://www.chosic.com/wp-content/uploads/2021/11/Ambient-Piano-and-Strings.mp3" type="audio/mpeg">
 </audio>
 
-<div class="container">
-    <div id="main-content">
+<div class="wrapper">
+    <div class="side-panel">
+        <h3>📅 Agenda Rohani</h3>
+        <div class="side-content">
+            <b>Senin - Jumat:</b><br>Renungan Pagi (05:00 WIB)<br><br>
+            <b>Sabtu:</b><br>Kidung Pujian Semesta<br><br>
+            <b>Minggu:</b><br>Refleksi Ibadah Mingguan
+        </div>
+    </div>
+
+    <div class="main-card">
+        <div class="status-badge">RESEP MANAGEMENT ID • ONLINE</div>
         <div class="image-card">
             <img id="display-image" src="">
             <div class="overlay">
-                <div class="ayat-isi" id="display-isi">Memuat Firman...</div>
-                <div class="ayat-ref" id="display-label">---</div>
+                <div class="ayat-isi" id="display-isi">Menyiapkan Berkat...</div>
             </div>
         </div>
+        <button onclick="mulaiRenungan()" id="btn-audio">▶ Putar Renungan</button>
+        <p id="subtitle" style="font-size: 0.8rem; color: #64748b; margin-top: 15px; font-style: italic;">"Klik untuk memulai saat teduhmu"</p>
+    </div>
 
-        <div id="subtitle">"Dengarkan renungan hari ini untuk memulai harimu..."</div>
-
-        <button id="btn-audio" onclick="mulaiRenungan()">
-            <span id="btn-text">▶ Putar Renungan Harian</span>
-        </button>
-
-        <div class="visualizer" id="viz">
-            <div class="bar" style="animation-delay: 0s"></div>
-            <div class="bar" style="animation-delay: 0.2s"></div>
-            <div class="bar" style="animation-delay: 0.4s"></div>
-            <div class="bar" style="animation-delay: 0.6s"></div>
-            <div class="bar" style="animation-delay: 0.8s"></div>
+    <div class="side-panel">
+        <h3>💡 Kata Motivasi</h3>
+        <div class="side-content" id="quote-box">
+            "Sebab rancangan-Ku bukanlah rancanganmu, dan jalanmu bukanlah jalan-Ku, demikianlah firman TUHAN." (Yesaya 55:8)
         </div>
     </div>
 </div>
@@ -88,13 +97,13 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec"; 
     let teksRenungan = "";
     const music = document.getElementById('bg-music');
-    music.volume = 0.2; 
+    music.volume = 0.15; // Sangat lembut di latar belakang
 
-    for(let i=0; i<25; i++){
+    for(let i=0; i<30; i++) {
         let p = document.createElement('div');
         p.className = 'particle';
         p.style.left = Math.random() * 100 + 'vw';
-        p.style.animationDelay = Math.random() * 12 + 's';
+        p.style.animationDelay = Math.random() * 15 + 's';
         document.body.appendChild(p);
     }
 
@@ -102,60 +111,36 @@
         teksRenungan = data.teksNarasi;
         document.getElementById('display-image').src = data.imageUrl;
         document.getElementById('display-isi').innerText = `"${data.isiAyat}"`;
-        document.getElementById('display-label').innerText = data.labelAyat;
+        document.getElementById('display-label-hidden', data.labelAyat); // Simpan label
     });
 
     function mulaiRenungan() {
-        const btnText = document.getElementById('btn-text');
         const sub = document.getElementById('subtitle');
-        const viz = document.getElementById('viz');
-
         if (window.speechSynthesis.speaking) {
             window.speechSynthesis.cancel();
             music.pause();
-            btnText.innerText = "▶ Putar Renungan";
-            viz.style.display = 'none';
-            sub.innerText = "Renungan dihentikan.";
+            sub.innerText = "Sesi teduh dihentikan.";
             return;
         }
 
-        if (teksRenungan) {
-            const utterance = new SpeechSynthesisUtterance(teksRenungan);
-            const voices = window.speechSynthesis.getVoices();
-            const maleVoice = voices.find(v => v.lang.includes('id') && v.name.toLowerCase().includes('male'));
-            
-            if (maleVoice) utterance.voice = maleVoice;
-            utterance.lang = 'id-ID';
-            utterance.rate = 1.0; 
-            utterance.pitch = 0.8; 
+        const utterance = new SpeechSynthesisUtterance(teksRenungan);
+        const voices = window.speechSynthesis.getVoices();
+        utterance.voice = voices.find(v => v.lang.includes('id') && v.name.toLowerCase().includes('male')) || null;
+        utterance.pitch = 0.8;
+        utterance.rate = 0.9;
 
-            utterance.onstart = () => {
-                btnText.innerText = "⏹ Berhenti";
-                viz.style.display = 'flex';
-                music.play().catch(() => console.log("Musik butuh klik manual"));
-            };
+        utterance.onstart = () => {
+            music.play();
+            sub.innerText = "Mendengarkan renungan hari ini...";
+        };
 
-            // Fitur Subtitle Berjalan (per kata)
-            utterance.onboundary = (event) => {
-                if (event.name === 'word') {
-                    const words = teksRenungan.split(' ');
-                    const currentWord = words.find((w, i) => teksRenungan.indexOf(w) >= event.charIndex);
-                    sub.innerText = `"...${currentWord}..."`;
-                }
-            };
+        utterance.onend = () => {
+            music.pause();
+            sub.innerText = "Amin. Tuhan Yesus memberkati.";
+        };
 
-            utterance.onend = () => {
-                btnText.innerText = "▶ Putar Ulang";
-                music.pause();
-                viz.style.display = 'none';
-                sub.innerText = "Tuhan Yesus memberkati harimu.";
-            };
-
-            window.speechSynthesis.speak(utterance);
-        }
+        window.speechSynthesis.speak(utterance);
     }
-
-    window.addEventListener('beforeunload', () => { window.speechSynthesis.cancel(); });
 </script>
 </body>
 </html>
