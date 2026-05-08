@@ -21,7 +21,7 @@
             font-size: 1.1rem; transition: all 0.3s ease;
         }
         button:active { transform: scale(0.96); }
-        button:disabled { background: #475569; cursor: not-allowed; }
+        button:disabled { background: #475569; cursor: not-allowed; opacity: 0.7; }
         .loader { border: 4px solid #334155; border-top: 4px solid #38bdf8; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 80px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -46,16 +46,21 @@
 
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec"; 
+    
+    let audioObj = null;
 
-    let teksNarasi = "";
-
+    // Load data dari GAS segera setelah halaman dibuka
     fetch(GAS_URL)
         .then(res => res.json())
         .then(data => {
-            teksNarasi = data.teksNarasi;
             document.getElementById('display-image').src = data.imageUrl;
             document.getElementById('display-isi').innerText = `"${data.isiAyat}"`;
             document.getElementById('display-label').innerText = data.labelAyat;
+            
+            // Siapkan Audio secara diam-diam agar saat diklik langsung play
+            const voiceUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(data.teksNarasi)}&tl=id&client=tw-ob`;
+            audioObj = new Audio(voiceUrl);
+            
             document.getElementById('loading').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
         });
@@ -63,24 +68,27 @@
     function playRenungan() {
         const btn = document.getElementById('btn-audio');
         const btnText = document.getElementById('btn-text');
-        
-        btn.disabled = true;
-        btnText.innerText = "🔊 Mendengarkan...";
 
-        // Menggunakan Google TTS Proxy agar tidak kena blokir CORS dan gratis
-        const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(teksNarasi.substring(0, 2000))}&tl=id&client=tw-ob`;
-        
-        const audio = new Audio(audioUrl);
-        audio.play().catch(e => {
-            alert("Klik sekali lagi untuk memutar suara.");
-            btn.disabled = false;
-            btnText.innerText = "▶ Putar Renungan";
-        });
+        if (!audioObj) return;
 
-        audio.onended = () => {
-            btnText.innerText = "▶ Putar Ulang";
-            btn.disabled = false;
-        };
+        if (btnText.innerText.includes("Putar")) {
+            btnText.innerText = "🔊 Mendengarkan...";
+            btn.disabled = true;
+
+            // Putar audio yang sudah disiapkan
+            audioObj.play().then(() => {
+                btn.disabled = false;
+            }).catch(e => {
+                console.error("Playback failed", e);
+                btn.disabled = false;
+                btnText.innerText = "▶ Coba Putar Lagi";
+            });
+
+            audioObj.onended = () => {
+                btnText.innerText = "▶ Putar Ulang";
+                btn.disabled = false;
+            };
+        }
     }
 </script>
 </body>
