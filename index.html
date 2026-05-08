@@ -18,8 +18,9 @@
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; }
         .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.2rem; line-height: 1.6; font-style: italic; }
         h3 { font-size: 1.1rem; color: #38bdf8; margin: 0 0 15px 0; letter-spacing: 1px; }
-        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; outline: none; }
-        .result-box { margin-top: 15px; font-size: 0.9rem; color: #cbd5e1; line-height: 1.7; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; min-height: 100px; }
+        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; outline: none; transition: 0.3s; }
+        .search-box:focus { border-color: #38bdf8; background: rgba(255,255,255,0.1); }
+        .result-box { margin-top: 15px; font-size: 0.9rem; color: #cbd5e1; line-height: 1.7; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; min-height: 100px; border: 1px solid rgba(255,255,255,0.05); }
         .ai-explanation { margin-top: 15px; font-size: 0.85rem; color: #94a3b8; line-height: 1.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
         button#btn-play { background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); color: white; border: none; padding: 20px; border-radius: 50px; font-weight: 600; width: 100%; cursor: pointer; transition: 0.3s; font-size: 1rem; box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2); }
         @media (max-width: 1024px) { .wrapper { flex-direction: column; align-items: center; } .side-panel { width: 100%; } }
@@ -51,8 +52,8 @@
     <div class="side-panel">
         <div class="glass-box">
             <h3>🔍 Cari Kekuatan</h3>
-            <input type="text" id="search-topic" class="search-box" placeholder="Ketik topik (ex: Sembuh, Semangat)..." onkeyup="if(event.keyCode===13) cariTopik()">
-            <div id="res-topic" class="result-box">Cari ayat penguatan...</div>
+            <input type="text" id="search-topic" class="search-box" placeholder="Ketik topik (ex: Marah, Sedih, Ujian)..." onkeyup="if(event.keyCode===13) cariTopik()">
+            <div id="res-topic" class="result-box">Ketik perasaanmu (contoh: sakit hati, selingkuh, sekolah) lalu tekan Enter.</div>
         </div>
     </div>
 </div>
@@ -63,10 +64,7 @@
     let player, teksRenungan = "", musicStarted = false;
     let availableVoices = [];
 
-    // Mengambil suara segera saat tersedia
-    window.speechSynthesis.onvoiceschanged = () => {
-        availableVoices = window.speechSynthesis.getVoices();
-    };
+    window.speechSynthesis.onvoiceschanged = () => { availableVoices = window.speechSynthesis.getVoices(); };
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('yt-player', {
@@ -86,21 +84,17 @@
         document.getElementById('daily-verse').innerText = dailyData[day].verse + ": \"" + dailyData[day].text + "\"";
         document.getElementById('daily-explanation').innerText = dailyData[day].exp;
 
-        fetch(GAS_URL)
-            .then(res => res.json())
-            .then(data => {
-                teksRenungan = data.teksNarasi;
-                const img = document.getElementById('display-image');
-                img.src = data.imageUrl;
-                img.onload = () => img.style.opacity = "1";
-                document.getElementById('display-isi').innerText = `"${data.isiAyat}"`;
-            });
+        fetch(GAS_URL).then(res => res.json()).then(data => {
+            teksRenungan = data.teksNarasi;
+            const img = document.getElementById('display-image');
+            img.src = data.imageUrl;
+            img.onload = () => img.style.opacity = "1";
+            document.getElementById('display-isi').innerText = `"${data.isiAyat}"`;
+        });
     }
 
     function toggleRenungan() {
-        // Aktifkan musik latar otomatis
         if (!musicStarted && player) { player.playVideo(); musicStarted = true; }
-
         const btn = document.getElementById('btn-play');
         if (window.speechSynthesis.speaking) {
             window.speechSynthesis.cancel();
@@ -108,51 +102,53 @@
             if(player) player.playVideo();
             return;
         }
-
         if(!teksRenungan) return;
-
         const utt = new SpeechSynthesisUtterance(teksRenungan);
-        
-        // --- FORCE SUARA PEREMPUAN INDONESIA ---
         if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
-        
-        const femaleVoice = availableVoices.find(v => 
-            v.lang.includes('id') && 
-            (v.name.toLowerCase().includes('perempuan') || 
-             v.name.toLowerCase().includes('female') || 
-             v.name.toLowerCase().includes('santi') || 
-             v.name.toLowerCase().includes('google')) &&
-             !v.name.toLowerCase().includes('laki') &&
-             !v.name.toLowerCase().includes('male')
-        );
-
+        const femaleVoice = availableVoices.find(v => v.lang.includes('id') && (v.name.toLowerCase().includes('perempuan') || v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('santi')) && !v.name.toLowerCase().includes('male'));
         if(femaleVoice) utt.voice = femaleVoice;
-        
         utt.lang = 'id-ID';
-        utt.pitch = 1.3; // Pitch lebih tinggi agar lebih feminin
-        utt.rate = 0.95; // Kecepatan bicara tenang
-        
-        utt.onstart = () => {
-            btn.innerText = "⏹ Berhenti";
-            if(player) player.pauseVideo();
-        };
-
-        utt.onend = () => {
-            btn.innerText = "▶ Putar Ulang";
-            if(player) player.playVideo();
-        };
-
+        utt.pitch = 1.3;
+        utt.rate = 0.95;
+        utt.onstart = () => { btn.innerText = "⏹ Berhenti"; if(player) player.pauseVideo(); };
+        utt.onend = () => { btn.innerText = "▶ Putar Ulang"; if(player) player.playVideo(); };
         window.speechSynthesis.speak(utt);
     }
 
     function cariTopik() {
         const db = {
+            // Masalah Hati & Hubungan
             "sembuh": "Mazmur 147:3 - 'Ia menyembuhkan orang-orang yang patah hati dan membalut luka-luka mereka.'",
+            "sakit hati": "Mazmur 34:19 - 'TUHAN itu dekat kepada orang-orang yang patah hati, dan Ia menyelamatkan orang-orang yang remuk jiwanya.'",
+            "selingkuh": "Ibrani 13:4 - 'Hendaklah kamu semua penuh hormat terhadap perkawinan... sebab orang-orang sundal dan pezinah akan dihakimi Allah.' (Tuhan membela kebenaranmu).",
+            "khianat": "Mazmur 55:23 - 'Serahkanlah kuatirmu kepada TUHAN, maka Ia akan memelihara engkau! Tidak selama-lamanya dibiarkan-Nya orang benar itu goyah.'",
+            "kecewa": "1 Petrus 5:7 - 'Serahkanlah segala kekhawatiranmu kepada-Nya, sebab Ia yang memelihara kamu.'",
+            "putus cinta": "Mazmur 147:3 - 'Tuhan menyembuhkan hati yang hancur dan membalut setiap lukamu.'",
+            
+            // Masalah Sekolah & Masa Depan
+            "sekolah": "Amsal 2:6 - 'Karena Tuhanlah yang memberikan hikmat, dari mulut-Nya datang pengetahuan dan kepandaian.'",
+            "ujian": "Filipi 4:13 - 'Segala perkara dapat kutanggung di dalam Dia yang memberi kekuatan kepadaku.' (Tenanglah saat ujian).",
+            "malas": "Amsal 6:6 - 'Hai pemalas, pergilah kepada semut, perhatikanlah lakunya dan jadilah bijak.'",
+            "masa depan": "Yeremia 29:11 - 'Sebab Aku ini tahu rancangan-rancangan apa yang ada pada-Ku mengenai kamu... rancangan damai sejahtera... untuk memberikan kepadamu hari depan yang penuh harapan.'",
+            "bodoh": "Yakobus 1:5 - 'Tetapi apabila di antara kamu ada yang kekurangan hikmat, hendaklah ia memintanya kepada Allah... maka hal itu akan diberikan kepadanya.'",
+
+            // Karakter & Emosi
+            "marah": "Efesus 4:26 - 'Apabila kamu menjadi marah, janganlah kamu berbuat dosa: janganlah matahari terbenam, sebelum padam amarahmu.'",
             "semangat": "Roma 12:11 - 'Janganlah hendaknya kerajinanmu kendor, biarlah rohmu menyala-nyala dan layanilah Tuhan.'",
-            "kecewa": "1 Petrus 5:7 - 'Serahkanlah segala kekhawatiranmu kepada-Nya, sebab Ia yang memelihara kamu.'"
+            "takut": "Yesaya 41:10 - 'Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu.'",
+            "sabar": "Pengkhotbah 7:8 - 'Akhir suatu hal lebih baik dari pada awalnya. Panjang sabar lebih baik dari pada tinggi hati.'",
+            "iri hati": "Amsal 14:30 - 'Hati yang tenang menyegarkan tubuh, tetapi iri hati membusukkan tulang.'",
+
+            // Jasmani & Umum
+            "olahraga": "1 Timotius 4:8 - 'Latihan badani terbatas gunanya, tetapi ibadah itu berguna dalam segala hal.' (Berlarilah dengan iman).",
+            "lelah": "Matius 11:28 - 'Marilah kepada-Ku, semua yang letih lesu dan berbeban berat, Aku akan memberi kelegaan kepadamu.'",
+            "uang": "Filipi 4:19 - 'Allahku akan memenuhi segala keperluanmu menurut kekayaan dan kemuliaan-Nya dalam Kristus Yesus.'",
+            "sakit": "Yakobus 5:15 - 'Dan doa yang lahir dari iman akan menyelamatkan orang sakit itu dan Tuhan akan membangunkan dia.'",
+            "dosa": "1 Yohanes 1:9 - 'Jika kita mengaku dosa kita, maka Ia adalah setia dan adil, sehingga Ia akan mengampuni segala dosa kita.'",
+            "gelisah": "Yohanes 14:27 - 'Damai sejahtera-Ku Kuberikan kepadamu... Janganlah gelisah dan gentar hatimu.'"
         };
         const key = document.getElementById('search-topic').value.toLowerCase();
-        document.getElementById('res-topic').innerText = db[key] || "Coba topik lain.";
+        document.getElementById('res-topic').innerText = db[key] || "Topik '" + key + "' belum ada di database. Coba: ujian, sakit hati, selingkuh, atau masa depan.";
     }
 
     for(let i=0; i<15; i++) {
