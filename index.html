@@ -80,44 +80,39 @@
     const music = document.getElementById('bg-music');
     music.volume = 0.15;
 
-    // Mapping Kitab Indonesia (Sesuai database Erwin Do Sianipar)
-    const kitabList = [
-        "kejadian", "keluaran", "imamat", "bilangan", "ulangan", "yosua", "hakim-hakim", "rut", "1samuel", "2samuel", "1raja-raja", "2raja-raja", "1tawarikh", "2tawarikh", "ezra", "nehemia", "ester", "ayub", "mazmur", "amsal", "pengkhotbah", "kidungagung", "yesaya", "yeremia", "ratapan", "yehezkiel", "daniel", "hosea", "yoel", "amos", "obaja", "yunus", "mikha", "nahum", "habakuk", "zefanya", "hagai", "zakharia", "maleakhi", "matius", "markus", "lukas", "yohanes", "kisahpararasul", "roma", "1korintus", "2korintus", "galatia", "efesus", "filipi", "kolose", "1tesalonika", "2tesalonika", "1timotius", "2timotius", "titus", "filemon", "ibrani", "yakobus", "1petrus", "2petrus", "1yohanes", "2yohanes", "3yohanes", "yudas", "wahyu"
-    ];
+    // Database Lengkap Kitab & Jumlah Pasal (TB)
+    const bibleDB = {
+        "kejadian": 50, "keluaran": 40, "imamat": 27, "bilangan": 36, "ulangan": 34, "yosua": 24, "hakim-hakim": 21, "rut": 4, "1samuel": 31, "2samuel": 24, "1raja-raja": 22, "2raja-raja": 25, "1tawarikh": 29, "2tawarikh": 36, "ezra": 10, "nehemia": 13, "ester": 10, "ayub": 42, "mazmur": 150, "amsal": 31, "pengkhotbah": 12, "kidungagung": 8, "yesaya": 66, "yeremia": 52, "ratapan": 5, "yehezkiel": 48, "daniel": 12, "hosea": 14, "yoel": 3, "amos": 9, "obaja": 1, "yunus": 4, "mikha": 7, "nahum": 3, "habakuk": 3, "zefanya": 3, "hagai": 2, "zakharia": 14, "maleakhi": 4, "matius": 28, "markus": 16, "lukas": 24, "yohanes": 21, "kisahpararasul": 28, "roma": 16, "1korintus": 16, "2korintus": 13, "galatia": 6, "efesus": 6, "filipi": 4, "kolose": 4, "1tesalonika": 5, "2tesalonika": 3, "1timotius": 6, "2timotius": 4, "titus": 3, "filemon": 1, "ibrani": 13, "yakobus": 5, "1petrus": 5, "2petrus": 3, "1yohanes": 5, "2yohanes": 1, "3yohanes": 1, "yudas": 1, "wahyu": 22
+    };
 
     function initApp() {
         const selKitab = document.getElementById('select-kitab');
-        kitabList.forEach((k) => {
+        Object.keys(bibleDB).forEach((k) => {
             let opt = document.createElement('option');
-            opt.value = k; 
-            opt.text = k.charAt(0).toUpperCase() + k.slice(1).replace(/(\d)/, '$1 ');
+            opt.value = k;
+            // Format Nama (e.g. 1samuel -> 1 Samuel)
+            let formattedName = k.charAt(0).toUpperCase() + k.slice(1);
+            if(/^\d/.test(formattedName)) formattedName = formattedName.charAt(0) + " " + formattedName.charAt(1).toUpperCase() + formattedName.slice(2);
+            opt.text = formattedName;
             selKitab.add(opt);
         });
         loadPasal();
         loadRenungan();
     }
 
-    async function loadPasal() {
+    function loadPasal() {
         const selPasal = document.getElementById('select-pasal');
         selPasal.innerHTML = "";
         const kitab = document.getElementById('select-kitab').value;
+        const totalPasal = bibleDB[kitab];
         
-        try {
-            // Mengambil daftar pasal dari repository
-            const res = await fetch(`https://raw.githubusercontent.com/erwindosianipar/api-alkitab/master/data/${kitab}.json`);
-            const data = await res.json();
-            const totalPasal = data.chapters.length;
-            
-            for(let i=1; i<=totalPasal; i++) {
-                let opt = document.createElement('option');
-                opt.value = i - 1; // Index array dimulai dari 0
-                opt.text = "Pasal " + i;
-                selPasal.add(opt);
-            }
-            getAyat();
-        } catch (e) {
-            console.error("Gagal memuat pasal");
+        for(let i=1; i<=totalPasal; i++) {
+            let opt = document.createElement('option');
+            opt.value = i - 1; 
+            opt.text = "Pasal " + i;
+            selPasal.add(opt);
         }
+        getAyat();
     }
 
     async function getAyat() {
@@ -148,7 +143,7 @@
 
     function cariMotivasi() {
         const val = document.getElementById('input-motivasi').value.toLowerCase();
-        document.getElementById('res-motivasi').innerText = dbMotivasi[val] || "Topik belum tersedia. Coba: Semangat, Sembuh, atau Sabar.";
+        document.getElementById('res-motivasi').innerText = dbMotivasi[val] || "Coba: Semangat, Sembuh, Sabar.";
     }
 
     function loadRenungan() {
@@ -169,17 +164,10 @@
         
         const utt = new SpeechSynthesisUtterance(teksRenungan);
         const voices = window.speechSynthesis.getVoices();
-        
-        // Pilih suara perempuan Indonesia secara ketat
-        const femaleVoice = voices.find(v => v.lang.includes('id') && 
-            (v.name.toLowerCase().includes('female') || 
-             v.name.toLowerCase().includes('perempuan') || 
-             !v.name.toLowerCase().includes('male')));
-             
+        const femaleVoice = voices.find(v => v.lang.includes('id') && !v.name.toLowerCase().includes('male'));
         if(femaleVoice) utt.voice = femaleVoice;
         utt.lang = 'id-ID';
-        utt.pitch = 1.3; // Pitch ditinggikan agar lebih feminin
-        utt.rate = 1.0; 
+        utt.pitch = 1.3; utt.rate = 1.0; 
         
         utt.onstart = () => { music.play(); document.getElementById('btn-play').innerText = "⏹ Berhenti"; };
         utt.onend = () => { music.pause(); document.getElementById('btn-play').innerText = "▶ Putar Ulang"; };
