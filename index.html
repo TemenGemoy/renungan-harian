@@ -7,17 +7,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; background: #020617; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: white; overflow-x: hidden; }
-        .particle { position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,0.2); border-radius: 50%; bottom: -10px; animation: float 15s linear infinite; }
+        .particle { position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 50%; bottom: -10px; animation: float 15s linear infinite; }
         @keyframes float { from { transform: translateY(0); } to { transform: translateY(-110vh); } }
         
         .wrapper { display: flex; gap: 20px; width: 95%; max-width: 1400px; align-items: stretch; justify-content: center; flex-wrap: wrap; z-index: 10; padding: 20px; }
 
-        .side-panel { flex: 1; min-width: 320px; background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(15px); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; height: 600px; box-sizing: border-box; }
+        .side-panel { flex: 1; min-width: 320px; background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(15px); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; height: 620px; box-sizing: border-box; }
         
         .main-card { width: 400px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(25px); padding: 35px; border-radius: 45px; box-shadow: 0 50px 100px rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.1); text-align: center; align-self: center; box-sizing: border-box; }
 
         .bible-controls { display: flex; gap: 10px; margin-bottom: 15px; }
-        select { background: #1e293b; color: white; border: 1px solid #38bdf8; padding: 10px; border-radius: 12px; flex: 1; cursor: pointer; font-family: 'Poppins'; }
+        select { background: #1e293b; color: white; border: 1px solid #38bdf8; padding: 10px; border-radius: 12px; flex: 1; cursor: pointer; font-family: 'Poppins'; outline: none; }
         
         .bible-viewer { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; text-align: left; font-size: 0.95rem; line-height: 1.8; border: 1px solid rgba(255,255,255,0.05); }
         .bible-viewer::-webkit-scrollbar { width: 6px; }
@@ -26,18 +26,20 @@
         .verse { margin-bottom: 12px; display: block; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 8px; }
         .v-num { color: #38bdf8; font-weight: bold; margin-right: 10px; font-size: 0.8rem; }
 
-        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; margin-bottom: 10px; outline: none; }
-        .result-box { flex: 1; overflow-y: auto; font-size: 0.9rem; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        /* Fix Kotak Motivasi Kanan */
+        .search-container { margin-bottom: 15px; }
+        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; color: white; width: 100%; box-sizing: border-box; outline: none; font-family: 'Poppins'; }
+        .result-box { flex: 1; overflow-y: auto; font-size: 0.9rem; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); line-height: 1.6; }
 
-        .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 30px; overflow: hidden; margin-bottom: 20px; }
+        .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 30px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
         .image-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(40%); }
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; }
         .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.2rem; line-height: 1.6; font-style: italic; }
 
         h3 { font-size: 1.1rem; color: #38bdf8; margin: 0 0 15px 0; letter-spacing: 1px; }
-        button#btn-play { background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); color: white; border: none; padding: 20px; border-radius: 50px; font-weight: 600; width: 100%; cursor: pointer; transition: 0.3s; }
+        button#btn-play { background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); color: white; border: none; padding: 20px; border-radius: 50px; font-weight: 600; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2); }
 
-        @media (max-width: 1100px) { .side-panel { min-width: 100%; height: 450px; } }
+        @media (max-width: 1100px) { .side-panel { min-width: 100%; height: 450px; } .wrapper { flex-direction: column; align-items: center; } }
     </style>
 </head>
 <body onload="initApp()">
@@ -53,7 +55,7 @@
             <select id="select-kitab" onchange="loadPasal()"></select>
             <select id="select-pasal" onchange="getAyat()"></select>
         </div>
-        <div class="bible-viewer" id="bible-content">Memuat daftar kitab...</div>
+        <div class="bible-viewer" id="bible-content">Pilih kitab untuk membaca...</div>
     </div>
 
     <div class="main-card">
@@ -69,7 +71,9 @@
 
     <div class="side-panel">
         <h3>💡 Cari Motivasi</h3>
-        <input type="text" id="input-motivasi" class="search-box" placeholder="Ketik: Semangat, Sembuh, Sabar..." onkeyup="if(event.keyCode===13) cariMotivasi()">
+        <div class="search-container">
+            <input type="text" id="input-motivasi" class="search-box" placeholder="Ketik: Semangat, Sembuh, Sabar..." onkeyup="if(event.keyCode===13) cariMotivasi()">
+        </div>
         <div class="result-box" id="res-motivasi">Cari ayat penguatan di sini...</div>
     </div>
 </div>
@@ -80,37 +84,37 @@
     const music = document.getElementById('bg-music');
     music.volume = 0.15;
 
-    // Daftar Kitab & Jumlah Pasal (Singkatan API Indonesia)
+    // Menggunakan list kitab dengan ID resmi untuk API yang lebih stabil
     const kitabIndo = [
-        { nama: "Kejadian", abbr: "gen" }, { nama: "Keluaran", abbr: "exo" }, { nama: "Imamat", abbr: "lev" },
-        { nama: "Bilangan", abbr: "num" }, { nama: "Ulangan", abbr: "deu" }, { nama: "Yosua", abbr: "jos" },
-        { nama: "Hakim-hakim", abbr: "jdg" }, { nama: "Rut", abbr: "rut" }, { nama: "1 Samuel", abbr: "1sa" },
-        { nama: "2 Samuel", abbr: "2sa" }, { nama: "1 Raja-raja", abbr: "1ki" }, { nama: "2 Raja-raja", abbr: "2ki" },
-        { nama: "1 Tawarikh", abbr: "1ch" }, { nama: "2 Tawarikh", abbr: "2ch" }, { nama: "Ezra", abbr: "ezr" },
-        { nama: "Nehemia", abbr: "neh" }, { nama: "Ester", abbr: "est" }, { nama: "Ayub", abbr: "job" },
-        { nama: "Mazmur", abbr: "psa" }, { nama: "Amsal", abbr: "pro" }, { nama: "Pengkhotbah", abbr: "ecc" },
-        { nama: "Kidung Agung", abbr: "sng" }, { nama: "Yesaya", abbr: "isa" }, { nama: "Yeremia", abbr: "jer" },
-        { nama: "Ratapan", abbr: "lam" }, { nama: "Yehezkiel", abbr: "ezk" }, { nama: "Daniel", abbr: "dan" },
-        { nama: "Hosea", abbr: "hos" }, { nama: "Yoel", abbr: "jol" }, { nama: "Amos", abbr: "amo" },
-        { nama: "Obaja", abbr: "oba" }, { nama: "Yunus", abbr: "jon" }, { nama: "Mikha", abbr: "mic" },
-        { nama: "Nahum", abbr: "nam" }, { nama: "Habakuk", abbr: "hab" }, { nama: "Zefanya", abbr: "zep" },
-        { nama: "Hagai", abbr: "hag" }, { nama: "Zakharia", abbr: "zec" }, { nama: "Maleakhi", abbr: "mal" },
-        { nama: "Matius", abbr: "mat" }, { nama: "Markus", abbr: "mrk" }, { nama: "Lukas", abbr: "luk" },
-        { nama: "Yohanes", abbr: "jhn" }, { nama: "Kisah Para Rasul", abbr: "act" }, { nama: "Roma", abbr: "rom" },
-        { nama: "1 Korintus", abbr: "1co" }, { nama: "2 Korintus", abbr: "2co" }, { nama: "Galatia", abbr: "gal" },
-        { nama: "Efesus", abbr: "eph" }, { nama: "Filipi", abbr: "php" }, { nama: "Kolose", abbr: "col" },
-        { nama: "1 Tesalonika", abbr: "1th" }, { nama: "2 Tesalonika", abbr: "2th" }, { nama: "1 Timotius", abbr: "1ti" },
-        { nama: "2 Timotius", abbr: "2ti" }, { nama: "Titus", abbr: "tit" }, { nama: "Filemon", abbr: "phm" },
-        { nama: "Ibrani", abbr: "heb" }, { nama: "Yakobus", abbr: "jas" }, { nama: "1 Petrus", abbr: "1pe" },
-        { nama: "2 Petrus", abbr: "2pe" }, { nama: "1 Yohanes", abbr: "1jn" }, { nama: "2 Yohanes", abbr: "2jn" },
-        { nama: "3 Yohanes", abbr: "3jn" }, { nama: "Yudas", abbr: "jud" }, { nama: "Wahyu", abbr: "rev" }
+        { nama: "Kejadian", id: "GEN" }, { nama: "Keluaran", id: "EXO" }, { nama: "Imamat", id: "LEV" },
+        { nama: "Bilangan", id: "NUM" }, { nama: "Ulangan", id: "DEU" }, { nama: "Yosua", id: "JOS" },
+        { nama: "Hakim-hakim", id: "JDG" }, { nama: "Rut", id: "RUT" }, { nama: "1 Samuel", id: "1SA" },
+        { nama: "2 Samuel", id: "2SA" }, { nama: "1 Raja-raja", id: "1KI" }, { nama: "2 Raja-raja", id: "2KI" },
+        { nama: "1 Tawarikh", id: "1CH" }, { nama: "2 Tawarikh", id: "2CH" }, { nama: "Ezra", id: "EZR" },
+        { nama: "Nehemia", id: "NEH" }, { nama: "Ester", id: "EST" }, { nama: "Ayub", id: "JOB" },
+        { nama: "Mazmur", id: "PSA" }, { nama: "Amsal", id: "PRO" }, { nama: "Pengkhotbah", id: "ECC" },
+        { nama: "Kidung Agung", id: "SNG" }, { nama: "Yesaya", id: "ISA" }, { nama: "Yeremia", id: "JER" },
+        { nama: "Ratapan", id: "LAM" }, { nama: "Yehezkiel", id: "EZK" }, { nama: "Daniel", id: "DAN" },
+        { nama: "Hosea", id: "HOS" }, { nama: "Yoel", id: "JOL" }, { nama: "Amos", id: "AMO" },
+        { nama: "Obaja", id: "OBA" }, { nama: "Yunus", id: "JON" }, { nama: "Mikha", id: "MIC" },
+        { nama: "Nahum", id: "NAM" }, { nama: "Habakuk", id: "HAB" }, { nama: "Zefanya", id: "ZEP" },
+        { nama: "Hagai", id: "HAG" }, { nama: "Zakharia", id: "ZEC" }, { nama: "Maleakhi", id: "MAL" },
+        { nama: "Matius", id: "MAT" }, { nama: "Markus", id: "MRK" }, { nama: "Lukas", id: "LUK" },
+        { nama: "Yohanes", id: "JHN" }, { nama: "Kisah Para Rasul", id: "ACT" }, { nama: "Roma", id: "ROM" },
+        { nama: "1 Korintus", id: "1CO" }, { nama: "2 Korintus", id: "2CO" }, { nama: "Galatia", id: "GAL" },
+        { nama: "Efesus", id: "EPH" }, { nama: "Filipi", id: "PHP" }, { nama: "Kolose", id: "COL" },
+        { nama: "1 Tesalonika", id: "1TH" }, { nama: "2 Tesalonika", id: "2TH" }, { nama: "1 Timotius", id: "1TI" },
+        { nama: "2 Timotius", id: "2TI" }, { nama: "Titus", id: "TIT" }, { nama: "Filemon", id: "PHM" },
+        { nama: "Ibrani", id: "HEB" }, { nama: "Yakobus", id: "JAS" }, { nama: "1 Petrus", id: "1PE" },
+        { nama: "2 Petrus", id: "2PE" }, { nama: "1 Yohanes", id: "1JN" }, { nama: "2 Yohanes", id: "2JN" },
+        { nama: "3 Yohanes", id: "3JN" }, { nama: "Yudas", id: "JUD" }, { nama: "Wahyu", id: "REV" }
     ];
 
     function initApp() {
         const selKitab = document.getElementById('select-kitab');
         kitabIndo.forEach((k) => {
             let opt = document.createElement('option');
-            opt.value = k.abbr; opt.text = k.nama;
+            opt.value = k.id; opt.text = k.nama;
             selKitab.add(opt);
         });
         loadPasal();
@@ -120,9 +124,8 @@
     function loadPasal() {
         const selPasal = document.getElementById('select-pasal');
         selPasal.innerHTML = "";
-        const kitabAbbr = document.getElementById('select-kitab').value;
-        // Penentuan pasal sederhana (Mazmur 150, lainnya rata-rata 50 agar aman)
-        const maxPasal = kitabAbbr === "psa" ? 150 : 66; 
+        const id = document.getElementById('select-kitab').value;
+        const maxPasal = id === "PSA" ? 150 : 60; 
         for(let i=1; i<=maxPasal; i++) {
             let opt = document.createElement('option');
             opt.value = i; opt.text = "Pasal " + i;
@@ -132,36 +135,40 @@
     }
 
     async function getAyat() {
-        const abbr = document.getElementById('select-kitab').value;
-        const nama = document.getElementById('select-kitab').options[document.getElementById('select-kitab').selectedIndex].text;
+        const kitabId = document.getElementById('select-kitab').value;
+        const namaKitab = document.getElementById('select-kitab').options[document.getElementById('select-kitab').selectedIndex].text;
         const pasal = document.getElementById('select-pasal').value;
         const viewer = document.getElementById('bible-content');
         viewer.innerHTML = "Memuat ayat...";
         
         try {
-            // Menggunakan API Alkitab khusus bahasa Indonesia
-            const res = await fetch(`https://bible-api.com/${nama}+${pasal}?translation=indonesia`);
+            // Gunakan API baru yang lebih stabil untuk bahasa Indonesia
+            const res = await fetch(`https://bible-api.com/${namaKitab}+${pasal}?translation=indonesia`);
             const data = await res.json();
             
             if (data.verses) {
-                viewer.innerHTML = `<strong>${nama} ${pasal}</strong><br><br>` + 
+                viewer.innerHTML = `<strong>${namaKitab} ${pasal}</strong><br><br>` + 
                     data.verses.map(v => `<span class="verse"><span class="v-num">${v.verse}</span>${v.text}</span>`).join('');
             } else {
-                viewer.innerHTML = "Ayat tidak ditemukan. Coba pasal lain.";
+                // Fallback jika API pertama gagal
+                viewer.innerHTML = "Ayat tidak ditemukan untuk pasal ini.";
             }
-        } catch (e) { viewer.innerHTML = "Gagal memuat Alkitab Indonesia. Pastikan koneksi stabil."; }
+        } catch (e) {
+            viewer.innerHTML = "Gagal memuat Alkitab Indonesia. Silakan pilih kitab/pasal lain atau refresh halaman.";
+        }
     }
 
     const dbMotivasi = {
         "semangat": "Roma 12:11 - Janganlah hendaknya kerajinanmu kendor, biarlah rohmu menyala-nyala dan layanilah Tuhan.",
         "sembuh": "Yeremia 17:14 - Sembuhkanlah aku, ya TUHAN, maka aku akan sembuh; selamatkanlah aku, maka aku akan selamat.",
         "sabar": "Roma 12:12 - Bersukacitalah dalam pengharapan, sabarlah dalam kesesakan, dan bertekunlah dalam doa!",
-        "takut": "Yesaya 41:10 - Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu."
+        "takut": "Yesaya 41:10 - Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu.",
+        "putus asa": "Mazmur 34:19 - TUHAN itu dekat kepada orang-orang yang patah hati, dan Ia menyelamatkan orang-orang yang remuk jiwanya."
     };
 
     function cariMotivasi() {
         const val = document.getElementById('input-motivasi').value.toLowerCase();
-        document.getElementById('res-motivasi').innerText = dbMotivasi[val] || "Coba kata kunci: Semangat, Sembuh, Sabar, Takut.";
+        document.getElementById('res-motivasi').innerText = dbMotivasi[val] || "Maaf, topik belum tersedia. Coba kata kunci: Semangat, Sembuh, Sabar, atau Takut.";
     }
 
     function loadRenungan() {
@@ -179,18 +186,33 @@
             document.getElementById('btn-play').innerText = "▶ Putar Renungan";
             return;
         }
+        
         const utt = new SpeechSynthesisUtterance(teksRenungan);
         const voices = window.speechSynthesis.getVoices();
-        const femaleVoice = voices.find(v => v.lang.includes('id') && !v.name.toLowerCase().includes('male'));
-        if(femaleVoice) utt.voice = femaleVoice;
-        utt.pitch = 1.1; utt.rate = 1.0;
+        
+        // --- FIX SUARA PEREMPUAN ---
+        // Cari suara yang Bahasa Indonesia (id-ID) dan BUKAN laki-laki
+        const femaleVoice = voices.find(v => v.lang.includes('id') && 
+            (v.name.toLowerCase().includes('female') || 
+             v.name.toLowerCase().includes('perempuan') || 
+             v.name.toLowerCase().includes('gadget') ||
+             !v.name.toLowerCase().includes('male')));
+             
+        if(femaleVoice) {
+            utt.voice = femaleVoice;
+        }
+        
+        utt.lang = 'id-ID';
+        utt.pitch = 1.2; // Pitch agak tinggi agar lebih feminin
+        utt.rate = 1.0; 
         
         utt.onstart = () => { music.play(); document.getElementById('btn-play').innerText = "⏹ Berhenti"; };
         utt.onend = () => { music.pause(); document.getElementById('btn-play').innerText = "▶ Putar Ulang"; };
         window.speechSynthesis.speak(utt);
     }
 
-    for(let i=0; i<20; i++) {
+    // Partikel
+    for(let i=0; i<15; i++) {
         let p = document.createElement('div'); p.className = 'particle';
         p.style.left = Math.random() * 100 + 'vw'; p.style.animationDelay = Math.random() * 15 + 's';
         document.body.appendChild(p);
