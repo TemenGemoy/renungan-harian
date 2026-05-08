@@ -80,29 +80,30 @@
     const music = document.getElementById('bg-music');
     music.volume = 0.15;
 
+    // Daftar Kitab sesuai ID API bible-api.alkitab.or.id
     const kitabIndo = [
-        { nama: "Kejadian", id: "Kejadian" }, { nama: "Keluaran", id: "Keluaran" }, { nama: "Imamat", id: "Imamat" },
-        { nama: "Bilangan", id: "Bilangan" }, { nama: "Ulangan", id: "Ulangan" }, { nama: "Yosua", id: "Yosua" },
-        { nama: "Hakim-hakim", id: "Hakim-hakim" }, { nama: "Rut", id: "Rut" }, { nama: "1 Samuel", id: "1Samuel" },
-        { nama: "2 Samuel", id: "2Samuel" }, { nama: "1 Raja-raja", id: "1Raja-raja" }, { nama: "2 Raja-raja", id: "2Raja-raja" },
-        { nama: "1 Tawarikh", id: "1Tawarikh" }, { nama: "2 Tawarikh", id: "2Tawarikh" }, { nama: "Ezra", id: "Ezra" },
-        { nama: "Nehemia", id: "Nehemia" }, { nama: "Ester", id: "Ester" }, { nama: "Ayub", id: "Ayub" },
-        { nama: "Mazmur", id: "Mazmur" }, { nama: "Amsal", id: "Amsal" }, { nama: "Pengkhotbah", id: "Pengkhotbah" },
-        { nama: "Kidung Agung", id: "KidungAgung" }, { nama: "Yesaya", id: "Yesaya" }, { nama: "Yeremia", id: "Yeremia" },
-        { nama: "Ratapan", id: "Ratapan" }, { nama: "Yehezkiel", id: "Yehezkiel" }, { nama: "Daniel", id: "Daniel" },
-        { nama: "Hosea", id: "Hosea" }, { nama: "Yoel", id: "Yoel" }, { nama: "Amos", id: "Amos" },
-        { nama: "Obaja", id: "Obaja" }, { nama: "Yunus", id: "Yunus" }, { nama: "Mikha", id: "Mikha" },
-        { nama: "Nahum", id: "Nahum" }, { nama: "Habakuk", id: "Habakuk" }, { nama: "Zefanya", id: "Zefanya" },
-        { nama: "Hagai", id: "Hagai" }, { nama: "Zakharia", id: "Zakharia" }, { nama: "Maleakhi", id: "Maleakhi" },
-        { nama: "Matius", id: "Matius" }, { nama: "Markus", id: "Markus" }, { nama: "Lukas", id: "Lukas" },
-        { nama: "Yohanes", id: "Yohanes" }, { nama: "Kisah Para Rasul", id: "KisahParaRasul" }, { nama: "Roma", id: "Roma" },
-        { nama: "1 Korintus", id: "1Korintus" }, { nama: "2 Korintus", id: "2Korintus" }, { nama: "Galatia", id: "Galatia" },
-        { nama: "Efesus", id: "Efesus" }, { nama: "Filipi", id: "Filipi" }, { nama: "Kolose", id: "Kolose" },
-        { nama: "1 Tesalonika", id: "1Tesalonika" }, { nama: "2 Tesalonika", id: "2Tesalonika" }, { nama: "1 Timotius", id: "1Timotius" },
-        { nama: "2 Timotius", id: "2Timotius" }, { nama: "Titus", id: "Titus" }, { nama: "Filemon", id: "Filemon" },
-        { nama: "Ibrani", id: "Ibrani" }, { nama: "Yakobus", id: "Yakobus" }, { nama: "1 Petrus", id: "1Petrus" },
-        { nama: "2 Petrus", id: "2Petrus" }, { nama: "1 Yohanes", id: "1Yohanes" }, { nama: "2 Yohanes", id: "2Yohanes" },
-        { nama: "3 Yohanes", id: "3Yohanes" }, { nama: "Yudas", id: "Yudas" }, { nama: "Wahyu", id: "Wahyu" }
+        { nama: "Kejadian", id: "1" }, { nama: "Keluaran", id: "2" }, { nama: "Imamat", id: "3" },
+        { nama: "Bilangan", id: "4" }, { nama: "Ulangan", id: "5" }, { nama: "Yosua", id: "6" },
+        { nama: "Hakim-hakim", id: "7" }, { nama: "Rut", id: "8" }, { nama: "1 Samuel", id: "9" },
+        { nama: "2 Samuel", id: "10" }, { nama: "1 Raja-raja", id: "11" }, { nama: "2 Raja-raja", id: "12" },
+        { nama: "1 Tawarikh", id: "13" }, { nama: "2 Tawarikh", id: "14" }, { nama: "Ezra", id: "15" },
+        { nama: "Nehemia", id: "16" }, { nama: "Ester", id: "17" }, { nama: "Ayub", id: "18" },
+        { nama: "Mazmur", id: "19" }, { nama: "Amsal", id: "20" }, { nama: "Pengkhotbah", id: "21" },
+        { nama: "Kidung Agung", id: "22" }, { nama: "Yesaya", id: "23" }, { nama: "Yeremia", id: "24" },
+        { nama: "Ratapan", id: "25" }, { nama: "Yehezkiel", id: "26" }, { nama: "Daniel", id: "27" },
+        { nama: "Hosea", id: "28" }, { nama: "Yoel", id: "29" }, { nama: "Amos", id: "30" },
+        { nama: "Obaja", id: "31" }, { nama: "Yunus", id: "32" }, { nama: "Mikha", id: "33" },
+        { nama: "Nahum", id: "34" }, { nama: "Habakuk", id: "35" }, { nama: "Zefanya", id: "36" },
+        { nama: "Hagai", id: "37" }, { nama: "Zakharia", id: "38" }, { nama: "Maleakhi", id: "39" },
+        { nama: "Matius", id: "40" }, { nama: "Markus", id: "41" }, { nama: "Lukas", id: "42" },
+        { nama: "Yohanes", id: "43" }, { nama: "Kisah Para Rasul", id: "44" }, { nama: "Roma", id: "45" },
+        { nama: "1 Korintus", id: "46" }, { nama: "2 Korintus", id: "47" }, { nama: "Galatia", id: "48" },
+        { nama: "Efesus", id: "49" }, { nama: "Filipi", id: "50" }, { nama: "Kolose", id: "51" },
+        { nama: "1 Tesalonika", id: "52" }, { nama: "2 Tesalonika", id: "53" }, { nama: "1 Timotius", id: "54" },
+        { nama: "2 Timotius", id: "55" }, { nama: "Titus", id: "56" }, { nama: "Filemon", id: "57" },
+        { nama: "Ibrani", id: "58" }, { nama: "Yakobus", id: "59" }, { nama: "1 Petrus", id: "60" },
+        { nama: "2 Petrus", id: "61" }, { nama: "1 Yohanes", id: "62" }, { nama: "2 Yohanes", id: "63" },
+        { nama: "3 Yohanes", id: "64" }, { nama: "Yudas", id: "65" }, { nama: "Wahyu", id: "66" }
     ];
 
     function initApp() {
@@ -116,39 +117,46 @@
         loadRenungan();
     }
 
-    function loadPasal() {
+    async function loadPasal() {
         const selPasal = document.getElementById('select-pasal');
         selPasal.innerHTML = "";
-        const id = document.getElementById('select-kitab').value;
-        const maxPasal = id === "Mazmur" ? 150 : 66; 
-        for(let i=1; i<=maxPasal; i++) {
-            let opt = document.createElement('option');
-            opt.value = i; opt.text = "Pasal " + i;
-            selPasal.add(opt);
+        const kitabId = document.getElementById('select-kitab').value;
+        
+        try {
+            const res = await fetch(`https://bible-api.alkitab.or.id/kitab/${kitabId}`);
+            const data = await res.json();
+            const totalPasal = data.pasal;
+            
+            for(let i=1; i<=totalPasal; i++) {
+                let opt = document.createElement('option');
+                opt.value = i; opt.text = "Pasal " + i;
+                selPasal.add(opt);
+            }
+            getAyat();
+        } catch (e) {
+            console.error("Gagal load pasal");
         }
-        getAyat();
     }
 
     async function getAyat() {
-        const kitab = document.getElementById('select-kitab').value;
+        const kitabId = document.getElementById('select-kitab').value;
+        const namaKitab = document.getElementById('select-kitab').options[document.getElementById('select-kitab').selectedIndex].text;
         const pasal = document.getElementById('select-pasal').value;
         const viewer = document.getElementById('bible-content');
-        viewer.innerHTML = "Memuat Firman...";
+        viewer.innerHTML = "Memuat ayat...";
         
         try {
-            // Menggunakan Alkitab API Indonesia yang baru
-            const res = await fetch(`https://alkitab.mobi/api/ai/tb/${kitab}/${pasal}`);
+            const res = await fetch(`https://bible-api.alkitab.or.id/ayat/${kitabId}/${pasal}`);
             const data = await res.json();
             
-            if (data.verses && data.verses.length > 0) {
-                viewer.innerHTML = `<strong>${kitab} ${pasal}</strong><br><br>` + 
-                    data.verses.map(v => `<span class="verse"><span class="v-num">${v.verse}</span>${v.content}</span>`).join('');
+            if (data.ayat && data.ayat.length > 0) {
+                viewer.innerHTML = `<strong>${namaKitab} ${pasal}</strong><br><br>` + 
+                    data.ayat.map(v => `<span class="verse"><span class="v-num">${v.no}</span>${v.teks}</span>`).join('');
             } else {
-                viewer.innerHTML = "Ayat tidak ditemukan untuk pasal ini.";
+                viewer.innerHTML = "Ayat tidak ditemukan.";
             }
         } catch (e) {
-            // Fallback jika API pertama gagal
-            viewer.innerHTML = "Gagal memuat Alkitab Indonesia dari server utama. Silakan coba lagi nanti.";
+            viewer.innerHTML = "Gagal memuat Alkitab. Coba lagi nanti.";
         }
     }
 
@@ -161,7 +169,7 @@
 
     function cariMotivasi() {
         const val = document.getElementById('input-motivasi').value.toLowerCase();
-        document.getElementById('res-motivasi').innerText = dbMotivasi[val] || "Maaf, topik belum tersedia. Coba kata kunci: Semangat, Sembuh, Sabar, atau Takut.";
+        document.getElementById('res-motivasi').innerText = dbMotivasi[val] || "Coba kata kunci: Semangat, Sembuh, Sabar, Takut.";
     }
 
     function loadRenungan() {
@@ -183,18 +191,16 @@
         const utt = new SpeechSynthesisUtterance(teksRenungan);
         const voices = window.speechSynthesis.getVoices();
         
-        // Pilihan suara khusus Perempuan Indonesia
+        // Pilih suara perempuan
         const femaleVoice = voices.find(v => v.lang.includes('id') && 
             (v.name.toLowerCase().includes('female') || 
              v.name.toLowerCase().includes('perempuan') || 
-             v.name.toLowerCase().includes('santi') ||
-             v.name.toLowerCase().includes('google') ||
              !v.name.toLowerCase().includes('male')));
              
         if(femaleVoice) utt.voice = femaleVoice;
         utt.lang = 'id-ID';
-        utt.pitch = 1.25; // Pitch tinggi agar feminin
-        utt.rate = 0.95; 
+        utt.pitch = 1.25;
+        utt.rate = 1.0; 
         
         utt.onstart = () => { music.play(); document.getElementById('btn-play').innerText = "⏹ Berhenti"; };
         utt.onend = () => { music.pause(); document.getElementById('btn-play').innerText = "▶ Putar Ulang"; };
