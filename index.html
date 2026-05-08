@@ -47,9 +47,7 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec"; 
     
     let teksRenungan = "";
-    let isPlaying = false;
 
-    // Load data
     fetch(GAS_URL)
         .then(res => res.json())
         .then(data => {
@@ -64,7 +62,6 @@
     function mulaiSuara() {
         const btnText = document.getElementById('btn-text');
 
-        // Jika sedang bunyi, maka berhenti
         if (window.speechSynthesis.speaking) {
             window.speechSynthesis.cancel();
             btnText.innerText = "▶ Putar Renungan";
@@ -73,15 +70,19 @@
 
         if (teksRenungan) {
             const utterance = new SpeechSynthesisUtterance(teksRenungan);
-            
-            // Cari suara Bahasa Indonesia di sistem
             const voices = window.speechSynthesis.getVoices();
-            const idVoice = voices.find(v => v.lang.includes('id'));
-            if (idVoice) utterance.voice = idVoice;
+
+            // Mencari suara Pria Indonesia (mencoba mencari keyword 'male' atau 'pria')
+            // Jika tidak ada, sistem akan mengambil default Indonesia tapi kita buat pitch-nya rendah
+            const idMaleVoice = voices.find(v => v.lang.includes('id') && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('pria') || v.name.toLowerCase().includes('david')));
+            
+            if (idMaleVoice) {
+                utterance.voice = idMaleVoice;
+            }
 
             utterance.lang = 'id-ID';
-            utterance.rate = 0.9; // Biar lebih tenang pembawaannya
-            utterance.pitch = 1;
+            utterance.rate = 1.0;  // Kecepatan normal untuk ketegasan
+            utterance.pitch = 0.8; // Menurunkan pitch membuat suara lebih berat/laki-laki
 
             utterance.onstart = () => {
                 btnText.innerText = "⏹ Berhenti Mendengarkan";
@@ -95,8 +96,10 @@
         }
     }
 
-    // Pancing suara agar daftar voice muncul (penting buat Chrome/Android)
-    window.speechSynthesis.getVoices();
+    // Load voices secara asinkron agar siap saat diklik
+    window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+    };
 </script>
 </body>
 </html>
