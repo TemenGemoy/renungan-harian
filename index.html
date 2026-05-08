@@ -72,8 +72,6 @@
             const utterance = new SpeechSynthesisUtterance(teksRenungan);
             const voices = window.speechSynthesis.getVoices();
 
-            // Mencari suara Pria Indonesia (mencoba mencari keyword 'male' atau 'pria')
-            // Jika tidak ada, sistem akan mengambil default Indonesia tapi kita buat pitch-nya rendah
             const idMaleVoice = voices.find(v => v.lang.includes('id') && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('pria') || v.name.toLowerCase().includes('david')));
             
             if (idMaleVoice) {
@@ -81,8 +79,8 @@
             }
 
             utterance.lang = 'id-ID';
-            utterance.rate = 1.0;  // Kecepatan normal untuk ketegasan
-            utterance.pitch = 0.8; // Menurunkan pitch membuat suara lebih berat/laki-laki
+            utterance.rate = 1.0; 
+            utterance.pitch = 0.8; // Suara tegas laki-laki
 
             utterance.onstart = () => {
                 btnText.innerText = "⏹ Berhenti Mendengarkan";
@@ -96,18 +94,11 @@
         }
     }
 
-    // Load voices secara asinkron agar siap saat diklik
-    window.speechSynthesis.onvoiceschanged = () => {
-        window.speechSynthesis.getVoices();
-    };
-</script>// Menghentikan suara secara paksa saat halaman di-refresh atau ditutup
-window.addEventListener('beforeunload', () => {
-    window.speechSynthesis.cancel();
-});
-
-// Menghentikan suara yang mungkin "nyangkut" dari sesi sebelumnya saat halaman baru terbuka
-window.addEventListener('load', () => {
-    window.speechSynthesis.cancel();
-});
+    // Solusi Anti-Nyangkut
+    window.addEventListener('beforeunload', () => { window.speechSynthesis.cancel(); });
+    window.addEventListener('load', () => { window.speechSynthesis.cancel(); });
+    
+    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+</script>
 </body>
 </html>
