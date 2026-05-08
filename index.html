@@ -10,29 +10,35 @@
         .particle { position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,0.2); border-radius: 50%; bottom: -10px; animation: float 15s linear infinite; }
         @keyframes float { from { transform: translateY(0); } to { transform: translateY(-110vh); } }
         
-        .wrapper { display: flex; gap: 20px; width: 95%; max-width: 1300px; align-items: stretch; justify-content: center; flex-wrap: wrap; z-index: 10; padding: 20px; }
+        .wrapper { display: flex; gap: 20px; width: 95%; max-width: 1400px; align-items: stretch; justify-content: center; flex-wrap: wrap; z-index: 10; padding: 20px; }
 
         /* Panel Samping */
-        .side-panel { flex: 1; min-width: 300px; background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(15px); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 15px; }
+        .side-panel { flex: 1; min-width: 320px; background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(15px); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; height: 600px; }
         
-        .main-card { width: 400px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(25px); padding: 35px; border-radius: 45px; box-shadow: 0 50px 100px rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        .main-card { width: 400px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(25px); padding: 35px; border-radius: 45px; box-shadow: 0 50px 100px rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.1); text-align: center; align-self: center; }
+
+        /* Style Alkitab (Kiri) */
+        .bible-controls { display: flex; gap: 10px; margin-bottom: 15px; }
+        select { background: #1e293b; color: white; border: 1px solid #38bdf8; padding: 8px; border-radius: 10px; flex: 1; cursor: pointer; outline: none; }
+        .bible-viewer { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; text-align: left; font-size: 0.9rem; line-height: 1.6; }
+        .bible-viewer::-webkit-scrollbar { width: 5px; }
+        .bible-viewer::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
+        .verse { margin-bottom: 10px; display: block; }
+        .v-num { color: #38bdf8; font-weight: bold; margin-right: 8px; font-size: 0.75rem; }
+
+        /* Style Motivasi (Kanan) */
+        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 15px; color: white; width: 100%; outline: none; margin-bottom: 10px; }
+        .result-box { flex: 1; overflow-y: auto; font-size: 0.85rem; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 20px; }
 
         .image-card { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 30px; overflow: hidden; margin-bottom: 20px; }
         .image-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(40%); }
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; }
-        .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.2rem; line-height: 1.6; font-style: italic; }
+        .ayat-isi { font-family: 'Playfair Display', serif; font-size: 1.1rem; line-height: 1.6; font-style: italic; }
 
-        /* Input & Search Style */
-        .search-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 12px 15px; border-radius: 15px; color: white; width: 80%; font-family: 'Poppins'; outline: none; }
-        .search-btn { background: #38bdf8; border: none; padding: 12px; border-radius: 15px; color: white; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .search-btn:hover { background: #0ea5e9; }
-        
-        .result-box { margin-top: 15px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 20px; min-height: 100px; }
-        
-        h3 { font-size: 1.1rem; color: #38bdf8; margin: 0; display: flex; align-items: center; gap: 10px; }
-        button#btn-play { background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); color: white; border: none; padding: 18px; border-radius: 50px; font-weight: 600; width: 100%; cursor: pointer; margin-top: 10px; }
+        h3 { font-size: 1.1rem; color: #38bdf8; margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; }
+        button#btn-play { background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); color: white; border: none; padding: 18px; border-radius: 50px; font-weight: 600; width: 100%; cursor: pointer; }
 
-        @media (max-width: 1024px) { .side-panel { min-width: 100%; } }
+        @media (max-width: 1100px) { .side-panel { min-width: 100%; height: 400px; } }
     </style>
 </head>
 <body>
@@ -43,33 +49,30 @@
 
 <div class="wrapper">
     <div class="side-panel">
-        <h3>📖 Telusuri Kitab</h3>
-        <p style="font-size: 0.8rem; color: #94a3b8;">Ketik nama kitab (Contoh: Mazmur, Yohanes)</p>
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="input-kitab" class="search-box" placeholder="Cari kitab...">
-            <button class="search-btn" onclick="cariKitab()">🔍</button>
+        <h3>📖 Alkitab Digital</h3>
+        <div class="bible-controls">
+            <select id="select-kitab" onchange="loadPasal()"></select>
+            <select id="select-pasal" onchange="getAyat()"></select>
         </div>
-        <div class="result-box" id="res-kitab">Hasil pencarian kitab akan muncul di sini...</div>
+        <div class="bible-viewer" id="bible-content">
+            Pilih kitab dan pasal untuk mulai membaca...
+        </div>
     </div>
 
     <div class="main-card">
         <div class="image-card">
             <img id="display-image" src="">
             <div class="overlay">
-                <div class="ayat-isi" id="display-isi">Menyiapkan renungan...</div>
+                <div class="ayat-isi" id="display-isi">Menyiapkan berkat...</div>
             </div>
         </div>
         <button onclick="mulaiRenungan()" id="btn-play">▶ Putar Renungan</button>
-        <p id="sub" style="font-size: 0.75rem; color: #64748b; margin-top: 15px;">"Dengarkan suara Tuhan hari ini"</p>
+        <p style="font-size: 0.75rem; color: #64748b; margin-top: 15px;">"Suara Tuhan menuntun langkahmu"</p>
     </div>
 
     <div class="side-panel">
         <h3>💡 Cari Motivasi</h3>
-        <p style="font-size: 0.8rem; color: #94a3b8;">Ketik kata kunci (Contoh: Semangat, Sabar, Sembuh)</p>
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="input-motivasi" class="search-box" placeholder="Ketik topik...">
-            <button class="search-btn" onclick="cariMotivasi()">✨</button>
-        </div>
+        <input type="text" id="input-motivasi" class="search-box" placeholder="Ketik topik (Semangat, Sembuh, Takut)..." onkeyup="if(event.keyCode===13) cariMotivasi()">
         <div class="result-box" id="res-motivasi">Cari ayat penguatan di sini...</div>
     </div>
 </div>
@@ -78,42 +81,64 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzgno-trMYg3bsZx8FW7wfMFZhsN3qrm9T1uG3OfLn4OdcrHEZSKjtNYrqCPZv-GXYW/exec"; 
     let teksRenungan = "";
     const music = document.getElementById('bg-music');
-    music.volume = 0.2;
+    music.volume = 0.15;
 
-    // Database Sederhana untuk Pencarian
-    const dbKitab = {
-        "kejadian": "Kitab pertama: Menceritakan tentang penciptaan alam semesta dan asal mula manusia.",
-        "mazmur": "Kumpulan puji-pujian dan doa yang sangat indah. Terdiri dari 150 pasal.",
-        "yohanes": "Injil yang menekankan bahwa Yesus adalah Firman yang menjadi manusia.",
-        "amsal": "Kitab hikmat untuk menuntun hidup yang bijaksana dan takut akan Tuhan."
-    };
+    // --- FITUR ALKITAB (KIRI) ---
+    const kitabData = ["Kejadian", "Keluaran", "Imamat", "Bilangan", "Ulangan", "Yosua", "Hakim-hakim", "Rut", "1 Samuel", "2 Samuel", "1 Raja-raja", "2 Raja-raja", "1 Tawarikh", "2 Tawarikh", "Ezra", "Nehemia", "Ester", "Ayub", "Mazmur", "Amsal", "Pengkhotbah", "Kidung Agung", "Yesaya", "Yeremia", "Ratapan", "Yehezkiel", "Daniel", "Hosea", "Yoel", "Amos", "Obaja", "Yunus", "Mikha", "Nahum", "Habakuk", "Zefanya", "Hagai", "Zakharia", "Maleakhi", "Matius", "Markus", "Lukas", "Yohanes", "Kisah Para Rasul", "Roma", "1 Korintus", "2 Korintus", "Galatia", "Efesus", "Filipi", "Kolose", "1 Tesalonika", "2 Tesalonika", "1 Timotius", "2 Timotius", "Titus", "Filemon", "Ibrani", "Yakobus", "1 Petrus", "2 Petrus", "1 Yohanes", "2 Yohanes", "3 Yohanes", "Yudas", "Wahyu"];
 
-    const dbMotivasi = {
-        "semangat": "'Janganlah hendaknya kerajinanmu kendor, biarlah rohmu menyala-nyala dan layanilah Tuhan.' (Roma 12:11)",
-        "sembuh": "'Sembuhkanlah aku, ya TUHAN, maka aku akan sembuh; selamatkanlah aku, maka aku akan selamat.' (Yeremia 17:14)",
-        "sabar": "'Bersukacitalah dalam pengharapan, sabarlah dalam kesesakan, dan bertekunlah dalam doa!' (Roma 12:12)",
-        "takut": "'Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu.' (Yesaya 41:10)"
-    };
-
-    // Fungsi Search
-    function cariKitab() {
-        const val = document.getElementById('input-kitab').value.toLowerCase();
-        document.getElementById('res-kitab').innerText = dbKitab[val] || "Kitab tidak ditemukan. Coba ketik nama lengkapnya.";
+    function initBible() {
+        const selKitab = document.getElementById('select-kitab');
+        kitabData.forEach((k, index) => {
+            let opt = document.createElement('option');
+            opt.value = index + 1;
+            opt.text = k;
+            selKitab.add(opt);
+        });
+        loadPasal();
     }
+
+    function loadPasal() {
+        const selPasal = document.getElementById('select-pasal');
+        selPasal.innerHTML = "";
+        for(let i=1; i<=150; i++) { // Max 150 (Mazmur)
+            let opt = document.createElement('option');
+            opt.value = i; opt.text = "Pasal " + i;
+            selPasal.add(opt);
+        }
+        getAyat();
+    }
+
+    async function getAyat() {
+        const kitabIdx = document.getElementById('select-kitab').value;
+        const kitabName = document.getElementById('select-kitab').options[document.getElementById('select-kitab').selectedIndex].text;
+        const pasal = document.getElementById('select-pasal').value;
+        const viewer = document.getElementById('bible-content');
+        
+        viewer.innerHTML = "Memuat ayat...";
+        try {
+            const res = await fetch(`https://bible-api.com/${kitabName}+${pasal}?translation=kjv`);
+            const data = await res.json();
+            if(data.verses) {
+                viewer.innerHTML = `<strong>${kitabName} ${pasal}</strong><br><br>` + 
+                    data.verses.map(v => `<span class="verse"><span class="v-num">${v.verse}</span>${v.text}</span>`).join('');
+            } else { viewer.innerHTML = "Pasal tidak tersedia untuk kitab ini."; }
+        } catch (e) { viewer.innerHTML = "Gagal memuat Alkitab. Coba lagi nanti."; }
+    }
+
+    // --- FITUR MOTIVASI (KANAN) ---
+    const dbMotivasi = {
+        "semangat": "Roma 12:11 - Janganlah hendaknya kerajinanmu kendor, biarlah rohmu menyala-nyala dan layanilah Tuhan.",
+        "sembuh": "Yeremia 17:14 - Sembuhkanlah aku, ya TUHAN, maka aku akan sembuh; selamatkanlah aku, maka aku akan selamat.",
+        "sabar": "Roma 12:12 - Bersukacitalah dalam pengharapan, sabarlah dalam kesesakan, dan bertekunlah dalam doa!",
+        "takut": "Yesaya 41:10 - Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu."
+    };
 
     function cariMotivasi() {
         const val = document.getElementById('input-motivasi').value.toLowerCase();
-        document.getElementById('res-motivasi').innerText = dbMotivasi[val] || "Topik belum tersedia. Coba kata kunci lain seperti: Semangat, Sembuh, atau Sabar.";
+        document.getElementById('res-motivasi').innerText = dbMotivasi[val] || "Coba kata kunci: Semangat, Sembuh, Sabar, Takut.";
     }
 
-    // Partikel
-    for(let i=0; i<25; i++) {
-        let p = document.createElement('div'); p.className = 'particle';
-        p.style.left = Math.random() * 100 + 'vw'; p.style.animationDelay = Math.random() * 15 + 's';
-        document.body.appendChild(p);
-    }
-
-    // Load Renungan
+    // --- CORE LOGIC ---
     fetch(GAS_URL).then(res => res.json()).then(data => {
         teksRenungan = data.teksNarasi;
         document.getElementById('display-image').src = data.imageUrl;
@@ -129,13 +154,22 @@
         }
         const utt = new SpeechSynthesisUtterance(teksRenungan);
         const voices = window.speechSynthesis.getVoices();
-        utt.voice = voices.find(v => v.lang.includes('id') && v.name.toLowerCase().includes('male')) || null;
-        utt.pitch = 0.8; utt.rate = 0.9;
+        // Balikin ke Cewe (Default ID biasanya cewe)
+        utt.voice = voices.find(v => v.lang.includes('id') && !v.name.toLowerCase().includes('male')) || null;
+        utt.pitch = 1.1; utt.rate = 1.0;
         
         utt.onstart = () => { music.play(); document.getElementById('btn-play').innerText = "⏹ Berhenti"; };
         utt.onend = () => { music.pause(); document.getElementById('btn-play').innerText = "▶ Putar Ulang"; };
         window.speechSynthesis.speak(utt);
     }
+
+    initBible();
+    for(let i=0; i<25; i++) {
+        let p = document.createElement('div'); p.className = 'particle';
+        p.style.left = Math.random() * 100 + 'vw'; p.style.animationDelay = Math.random() * 15 + 's';
+        document.body.appendChild(p);
+    }
+    window.addEventListener('beforeunload', () => { window.speechSynthesis.cancel(); });
 </script>
 </body>
 </html>
