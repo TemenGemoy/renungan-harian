@@ -53,7 +53,7 @@
             <select id="select-kitab" onchange="loadPasal()"></select>
             <select id="select-pasal" onchange="getAyat()"></select>
         </div>
-        <div class="bible-viewer" id="bible-content">Pilih kitab untuk membaca...</div>
+        <div class="bible-viewer" id="bible-content">Memilih kitab...</div>
     </div>
 
     <div class="main-card">
@@ -64,7 +64,6 @@
             </div>
         </div>
         <button onclick="mulaiRenungan()" id="btn-play">▶ Putar Renungan</button>
-        <p style="font-size: 0.75rem; color: #64748b; margin-top: 15px;">"Suara Tuhan menuntun langkahmu"</p>
     </div>
 
     <div class="side-panel">
@@ -80,22 +79,40 @@
     const music = document.getElementById('bg-music');
     music.volume = 0.15;
 
-    // Database Lengkap Kitab & Jumlah Pasal (TB)
-    const bibleDB = {
-        "kejadian": 50, "keluaran": 40, "imamat": 27, "bilangan": 36, "ulangan": 34, "yosua": 24, "hakim-hakim": 21, "rut": 4, "1samuel": 31, "2samuel": 24, "1raja-raja": 22, "2raja-raja": 25, "1tawarikh": 29, "2tawarikh": 36, "ezra": 10, "nehemia": 13, "ester": 10, "ayub": 42, "mazmur": 150, "amsal": 31, "pengkhotbah": 12, "kidungagung": 8, "yesaya": 66, "yeremia": 52, "ratapan": 5, "yehezkiel": 48, "daniel": 12, "hosea": 14, "yoel": 3, "amos": 9, "obaja": 1, "yunus": 4, "mikha": 7, "nahum": 3, "habakuk": 3, "zefanya": 3, "hagai": 2, "zakharia": 14, "maleakhi": 4, "matius": 28, "markus": 16, "lukas": 24, "yohanes": 21, "kisahpararasul": 28, "roma": 16, "1korintus": 16, "2korintus": 13, "galatia": 6, "efesus": 6, "filipi": 4, "kolose": 4, "1tesalonika": 5, "2tesalonika": 3, "1timotius": 6, "2timotius": 4, "titus": 3, "filemon": 1, "ibrani": 13, "yakobus": 5, "1petrus": 5, "2petrus": 3, "1yohanes": 5, "2yohanes": 1, "3yohanes": 1, "yudas": 1, "wahyu": 22
+    // Database Lengkap 66 Kitab dengan Jumlah Pasal yang Benar
+    const bibleData = {
+        "kejadian": { n: "Kejadian", p: 50 }, "keluaran": { n: "Keluaran", p: 40 }, "imamat": { n: "Imamat", p: 27 },
+        "bilangan": { n: "Bilangan", p: 36 }, "ulangan": { n: "Ulangan", p: 34 }, "yosua": { n: "Yosua", p: 24 },
+        "hakim-hakim": { n: "Hakim-hakim", p: 21 }, "rut": { n: "Rut", p: 4 }, "1-samuel": { n: "1 Samuel", p: 31 },
+        "2-samuel": { n: "2 Samuel", p: 24 }, "1-raja-raja": { n: "1 Raja-raja", p: 22 }, "2-raja-raja": { n: "2 Raja-raja", p: 25 },
+        "1-tawarikh": { n: "1 Tawarikh", p: 29 }, "2-tawarikh": { n: "2 Tawarikh", p: 36 }, "ezra": { n: "Ezra", p: 10 },
+        "nehemia": { n: "Nehemia", p: 13 }, "ester": { n: "Ester", p: 10 }, "ayub": { n: "Ayub", p: 42 },
+        "mazmur": { n: "Mazmur", p: 150 }, "amsal": { n: "Amsal", p: 31 }, "pengkhotbah": { n: "Pengkhotbah", p: 12 },
+        "kidung-agung": { n: "Kidung Agung", p: 8 }, "yesaya": { n: "Yesaya", p: 66 }, "yeremia": { n: "Yeremia", p: 52 },
+        "ratapan": { n: "Ratapan", p: 5 }, "yehezkiel": { n: "Yehezkiel", p: 48 }, "daniel": { n: "Daniel", p: 12 },
+        "hosea": { n: "Hosea", p: 14 }, "yoel": { n: "Yoel", p: 3 }, "amos": { n: "Amos", p: 9 },
+        "obaja": { n: "Obaja", p: 1 }, "yunus": { n: "Yunus", p: 4 }, "mikha": { n: "Mikha", p: 7 },
+        "nahum": { n: "Nahum", p: 3 }, "habakuk": { n: "Habakuk", p: 3 }, "zefanya": { n: "Zefanya", p: 3 },
+        "hagai": { n: "Hagai", p: 2 }, "zakharia": { n: "Zakharia", p: 14 }, "maleakhi": { n: "Maleakhi", p: 4 },
+        "matius": { n: "Matius", p: 28 }, "markus": { n: "Markus", p: 16 }, "lukas": { n: "Lukas", p: 24 },
+        "yohanes": { n: "Yohanes", p: 21 }, "kisah-para-rasul": { n: "Kisah Para Rasul", p: 28 }, "roma": { n: "Roma", p: 16 },
+        "1-korintus": { n: "1 Korintus", p: 16 }, "2-korintus": { n: "2 Korintus", p: 13 }, "galatia": { n: "Galatia", p: 6 },
+        "efesus": { n: "Efesus", p: 6 }, "filipi": { n: "Filipi", p: 4 }, "kolose": { n: "Kolose", p: 4 },
+        "1-tesalonika": { n: "1 Tesalonika", p: 5 }, "2-tesalonika": { n: "2 Tesalonika", p: 3 }, "1-timotius": { n: "1 Timotius", p: 6 },
+        "2-timotius": { n: "2 Timotius", p: 4 }, "titus": { n: "Titus", p: 3 }, "filemon": { n: "Filemon", p: 1 },
+        "ibrani": { n: "Ibrani", p: 13 }, "yakobus": { n: "Yakobus", p: 5 }, "1-petrus": { n: "1 Petrus", p: 5 },
+        "2-petrus": { n: "2 Petrus", p: 3 }, "1-yohanes": { n: "1 Yohanes", p: 5 }, "2-yohanes": { n: "2 Yohanes", p: 1 },
+        "3-yohanes": { n: "3 Yohanes", p: 1 }, "yudas": { n: "Yudas", p: 1 }, "wahyu": { n: "Wahyu", p: 22 }
     };
 
     function initApp() {
         const selKitab = document.getElementById('select-kitab');
-        Object.keys(bibleDB).forEach((k) => {
+        for (let key in bibleData) {
             let opt = document.createElement('option');
-            opt.value = k;
-            // Format Nama (e.g. 1samuel -> 1 Samuel)
-            let formattedName = k.charAt(0).toUpperCase() + k.slice(1);
-            if(/^\d/.test(formattedName)) formattedName = formattedName.charAt(0) + " " + formattedName.charAt(1).toUpperCase() + formattedName.slice(2);
-            opt.text = formattedName;
+            opt.value = key;
+            opt.text = bibleData[key].n;
             selKitab.add(opt);
-        });
+        }
         loadPasal();
         loadRenungan();
     }
@@ -103,9 +120,8 @@
     function loadPasal() {
         const selPasal = document.getElementById('select-pasal');
         selPasal.innerHTML = "";
-        const kitab = document.getElementById('select-kitab').value;
-        const totalPasal = bibleDB[kitab];
-        
+        const kitabKey = document.getElementById('select-kitab').value;
+        const totalPasal = bibleData[kitabKey].p;
         for(let i=1; i<=totalPasal; i++) {
             let opt = document.createElement('option');
             opt.value = i - 1; 
@@ -116,13 +132,15 @@
     }
 
     async function getAyat() {
-        const kitab = document.getElementById('select-kitab').value;
+        const kitabKey = document.getElementById('select-kitab').value;
         const pasalIdx = document.getElementById('select-pasal').value;
         const viewer = document.getElementById('bible-content');
         viewer.innerHTML = "Memuat Firman...";
         
         try {
-            const res = await fetch(`https://raw.githubusercontent.com/erwindosianipar/api-alkitab/master/data/${kitab}.json`);
+            // Mengambil file JSON dari repo Erwindo Sianipar sesuai key yang sudah dipetakan
+            const res = await fetch(`https://raw.githubusercontent.com/erwindosianipar/api-alkitab/master/data/${kitabKey}.json`);
+            if(!res.ok) throw new Error("File tidak ditemukan");
             const data = await res.json();
             const chapter = data.chapters[pasalIdx];
             
@@ -130,18 +148,16 @@
                 chapter.verses.map(v => `<span class="verse"><span class="v-num">${v.number}</span>${v.text}</span>`).join('');
             viewer.scrollTop = 0;
         } catch (e) {
-            viewer.innerHTML = "Gagal memuat Alkitab. Cek koneksi internet.";
+            viewer.innerHTML = "Gagal memuat ayat. Kitab ini belum tersedia atau koneksi terputus.";
         }
     }
 
-    const dbMotivasi = {
-        "semangat": "Roma 12:11 - Janganlah hendaknya kerajinanmu kendor, biarlah rohmu menyala-nyala dan layanilah Tuhan.",
-        "sembuh": "Yeremia 17:14 - Sembuhkanlah aku, ya TUHAN, maka aku akan sembuh; selamatkanlah aku, maka aku akan selamat.",
-        "sabar": "Roma 12:12 - Bersukacitalah dalam pengharapan, sabarlah dalam kesesakan, dan bertekunlah dalam doa!",
-        "takut": "Yesaya 41:10 - Janganlah takut, sebab Aku menyertai engkau, janganlah bimbang, sebab Aku ini Allahmu."
-    };
-
     function cariMotivasi() {
+        const dbMotivasi = {
+            "semangat": "Roma 12:11 - Janganlah hendaknya kerajinanmu kendor, biarlah rohmu menyala-nyala dan layanilah Tuhan.",
+            "sembuh": "Yeremia 17:14 - Sembuhkanlah aku, ya TUHAN, maka aku akan sembuh; selamatkanlah aku, maka aku akan selamat.",
+            "sabar": "Roma 12:12 - Bersukacitalah dalam pengharapan, sabarlah dalam kesesakan, dan bertekunlah dalam doa!"
+        };
         const val = document.getElementById('input-motivasi').value.toLowerCase();
         document.getElementById('res-motivasi').innerText = dbMotivasi[val] || "Coba: Semangat, Sembuh, Sabar.";
     }
@@ -158,19 +174,14 @@
         if (window.speechSynthesis.speaking) {
             window.speechSynthesis.cancel();
             music.pause();
-            document.getElementById('btn-play').innerText = "▶ Putar Renungan";
             return;
         }
-        
         const utt = new SpeechSynthesisUtterance(teksRenungan);
         const voices = window.speechSynthesis.getVoices();
         const femaleVoice = voices.find(v => v.lang.includes('id') && !v.name.toLowerCase().includes('male'));
         if(femaleVoice) utt.voice = femaleVoice;
-        utt.lang = 'id-ID';
-        utt.pitch = 1.3; utt.rate = 1.0; 
-        
-        utt.onstart = () => { music.play(); document.getElementById('btn-play').innerText = "⏹ Berhenti"; };
-        utt.onend = () => { music.pause(); document.getElementById('btn-play').innerText = "▶ Putar Ulang"; };
+        utt.pitch = 1.3; utt.onstart = () => music.play();
+        utt.onend = () => music.pause();
         window.speechSynthesis.speak(utt);
     }
 
